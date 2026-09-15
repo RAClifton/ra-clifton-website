@@ -28,10 +28,17 @@
 - [x] `RESEND_API_KEY` configured — locally and in Vercel
 - [x] `RESEND_FROM_EMAIL` configured — `R.A. Clifton <research@raclifton.com>`
 - [x] full-access setup key revoked — confirmed dead
-- [~] report email received in test inbox — *dispatched successfully with
-      `emailSent: true`; **awaiting your confirmation it arrived***
-- [ ] email report link works ← *check one of the test emails*
-- [ ] email AI Readiness link works ← *check one of the test emails*
+- [x] report email received in test inbox — **confirmed 15 Sep**, delivered to
+      Gmail **Inbox (not spam)**, from `research@raclifton.com`
+- [ ] email report link works ← *must be re-tested AFTER go-live, see note*
+- [ ] email AI Readiness link works ← *must be re-tested AFTER go-live, see note*
+
+> **Note on the two test emails already received.** Both were sent before
+> `NEXT_PUBLIC_SITE_URL` was switched to the live domain, so their links are
+> stale: the 9:23 PM one points to `http://localhost:3000` and the 9:57 PM one
+> to the old `*.vercel.app` address. This is expected, not a fault. Vercel now
+> holds `https://www.raclifton.com`, so all future emails build correct links.
+> Verify them by submitting the real form once the site is public.
 
 ## Email receiving *(not in the original checklist)*
 - [x] Cloudflare Email Routing activated on `raclifton.com`
