@@ -131,10 +131,24 @@
    fixed (`9e25f8e`). **Safari and a real-browser pass through both forms are still
    outstanding** — the site went live before they were run.
 2. ~~**You:** confirm inbound mail arrives~~ — **done 15 Sep**, header-verified.
-   Report-email *links* still need re-testing after go-live (the existing test
-   emails predate the canonical-URL switch).
-3. **Claude:** flip the site public — one setting change
-4. **Claude:** delete the temporary token files
-5. **Then:** tag the production baseline before any new build-out
+3. ~~**Claude:** flip the site public~~ — **done 15 Sep.** The site is live.
+4. ~~**Claude:** re-test report-email links~~ — **done 15 Sep**, both resolve.
+5. ~~**Then:** tag the production baseline~~ — **done**, `v14.1.2-live`.
+6. **Claude, on your say-so:** delete `~/.raclifton-setup-tokens` and
+   `~/.raclifton-db`. Not done automatically — the Vercel token is still the only
+   way to change deployment protection from here, and the Neon URL is the only
+   way to read leads outside the app. Deleting them is safe but not reversible
+   without re-issuing, so it is your call.
 
-Everything else is done and verified.
+## The one real gap
+
+The site is public, but **neither lead form has been submitted through an actual
+browser.** Every test has gone straight to the API, which bypasses the
+`sessionStorage` handoff that carries `rac_research_lead_id` from the research
+report modal to the assessment form. The database join is proven; the
+*browser-side* step that populates it is not.
+
+Until someone does this, in one tab, in this order — open the research report,
+submit it, then click through to the assessment and submit — there is a real
+chance that live report-to-assessment attribution silently records `null`.
+Safari has also never been opened against the site.
