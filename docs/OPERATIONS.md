@@ -209,14 +209,19 @@ anything that appears from now on is a real lead.
 
 | # | Item | Owner |
 |---|---|---|
-| 1 | **Submit both forms through a real browser, in one tab, in order** — see SOP 6 | **Clifton** |
+| 1 | ~~Submit both forms through a real browser~~ — **done 15 Sep**, `joined = true` | Closed |
 | 2 | Safari pass at a couple of widths | **Clifton** |
 | 3 | Decide whether to publish the revised research report PDF to the site | **Clifton** |
 | 4 | Delete `~/.raclifton-setup-tokens` and `~/.raclifton-db` | Claude, on your say-so |
 | 5 | Vercel token expires **14 October 2026** | Note only — see SOP 4 |
 
-**Why item 1 still matters, even though the site is live.** Every test so far
-called the site's APIs directly, which bypasses all the browser JavaScript.
+**This was closed on 15 September.** Both paths were driven through a real
+Chrome instance and the attribution join came back `true`. SOP 6 is kept below
+because it is the right check to re-run after any change to the forms, the
+modal, or the session-storage keys.
+
+Why it mattered: API tests call the site's endpoints directly, bypassing all
+the browser JavaScript.
 When someone requests the research report, the page quietly stores an ID in
 that browser tab; the assessment form later reads it back and that is what
 links the two records together. API calls set that ID by hand, so they prove

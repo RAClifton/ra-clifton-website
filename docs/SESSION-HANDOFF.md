@@ -62,20 +62,15 @@ Verified working on the public site (via API, not a browser):
   - report email links point at www.raclifton.com and resolve
   - inbound mail to research@raclifton.com forwards to Gmail (header-verified)
 
-THE ONE REAL GAP
-Neither lead form has been submitted through an actual browser. Every test
-has gone straight to the API, which bypasses the sessionStorage handoff that
-carries rac_research_lead_id from the research report modal to the assessment
-form. The database join is proven; the browser step that populates it is not.
-If it is broken, live attribution silently records null.
+BROWSER VERIFICATION - CLOSED 15 SEP
+Both lead paths were driven through a real Chrome instance via the DevTools
+Protocol. The research report modal stored rac_research_lead_id by itself, the
+assessment form read it back, and the database join came back joined=true.
+Attribution works end to end. Re-run OPERATIONS.md SOP 6 after any change to
+the forms, the modal, or the session-storage keys.
 
-To close it: open https://www.raclifton.com in ONE tab, submit the research
-report form, then click "Discover Your AI Readiness Score" from the success
-screen and submit the assessment form. Do not reload or open a new tab
-between the two. Then query the join (OPERATIONS.md SOP 2) to confirm
-research_report_lead_id is populated rather than null.
-
-Safari has also never been opened against the site.
+Safari has still never been opened against the site, and nobody has looked at
+the live site with human eyes at every width since go-live.
 
 OTHER OPEN ITEMS
   1. Delete ~/.raclifton-setup-tokens and ~/.raclifton-db when Clifton says

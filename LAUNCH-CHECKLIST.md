@@ -78,7 +78,7 @@
 - [x] environment variables configured — all 4, secrets encrypted
 - [x] deployment succeeds
 - [x] Chrome tested — 15 Sep
-- [~] Safari tested — *not run; site went live on your instruction*
+- [~] Safari tested — *still not run; Chrome verified, incl. a scripted real-browser pass*
 - [x] 1440 tested
 - [x] 1280 tested
 - [x] 1024 tested
@@ -108,8 +108,8 @@
 - [x] HTTPS works — Let's Encrypt, valid to 14 Dec 2026, auto-renews
 - [x] `NEXT_PUBLIC_SITE_URL` set to canonical production URL
 - [x] production redeployed after URL change
-- [~] Path A tested end-to-end — API verified against the **public** site 15 Sep; still not exercised through a real browser
-- [~] Path B tested end-to-end — API verified against the **public** site 15 Sep; still not exercised through a real browser
+- [x] Path A tested end-to-end — **through a real browser**, 15 Sep (SOP 6)
+- [x] Path B tested end-to-end — **through a real browser**, 15 Sep (SOP 6)
 - [x] report-to-assessment attribution confirmed — join verified in the database
 - [x] report access survives an email failure — deliberately tested
 - [x] **site made public — 15 Sep 2026.** `ssoProtection.deploymentType` moved `all` → `all_except_custom_domains` via the Vercel REST API (not the MCP tool, whose enum omits that value). Verified anonymously: www serves the real page, apex 308s to www, and raw `*.vercel.app` deployment URLs remain gated.
@@ -128,8 +128,8 @@
 ## What's actually left
 
 1. ~~**You:** browser QA at all 8 widths~~ — Chrome done 15 Sep; two defects found and
-   fixed (`9e25f8e`). **Safari and a real-browser pass through both forms are still
-   outstanding** — the site went live before they were run.
+   fixed (`9e25f8e`). ~~Real-browser pass through both forms~~ — **done 15 Sep**,
+   see below. **Safari is still outstanding.**
 2. ~~**You:** confirm inbound mail arrives~~ — **done 15 Sep**, header-verified.
 3. ~~**Claude:** flip the site public~~ — **done 15 Sep.** The site is live.
 4. ~~**Claude:** re-test report-email links~~ — **done 15 Sep**, both resolve.
@@ -140,15 +140,27 @@
    way to read leads outside the app. Deleting them is safe but not reversible
    without re-issuing, so it is your call.
 
-## The one real gap
+## Browser verification — closed 15 Sep 2026
 
-The site is public, but **neither lead form has been submitted through an actual
-browser.** Every test has gone straight to the API, which bypasses the
-`sessionStorage` handoff that carries `rac_research_lead_id` from the research
-report modal to the assessment form. The database join is proven; the
-*browser-side* step that populates it is not.
+Both lead paths were driven through a real Chrome instance via the DevTools
+Protocol, so the site's own JavaScript ran exactly as it does for a visitor.
 
-Until someone does this, in one tab, in this order — open the research report,
-submit it, then click through to the assessment and submit — there is a real
-chance that live report-to-assessment attribution silently records `null`.
-Safari has also never been opened against the site.
+The thing that needed proving was the `sessionStorage` handoff: the research
+report modal must store `rac_research_lead_id`, and the assessment form must
+read it back. API tests set that value by hand and prove nothing about it.
+
+Observed, in one tab, without reloading:
+
+1. `sessionStorage` empty at start
+2. Research report submitted → success screen → **the page itself stored**
+   `rac_research_lead_id = dc8c9bf3-…`
+3. Clicked through to the assessment; `rac_cta_origin` became
+   `research_report_success`
+4. Assessment submitted → *"Thank you. Your information has been received."*
+5. Database join confirmed: `research_report_lead_id` matched the stored value,
+   `joined = true`
+
+Test rows purged afterwards.
+
+**Still not done:** Safari has never been opened against the site, and nobody
+has looked at the live site with human eyes at every width since go-live.
