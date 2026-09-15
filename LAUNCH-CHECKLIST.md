@@ -1,6 +1,6 @@
 # R.A. Clifton® v14.1.2 — Launch Checklist
 
-**Status as of 15 September 2026.** Full detail in [docs/OPERATIONS.md](docs/OPERATIONS.md).
+**Status: LIVE as of 15 September 2026.** Full detail in [docs/OPERATIONS.md](docs/OPERATIONS.md).
 
 **Legend:** `[x]` done and verified · `[~]` partially done, see note · `[ ]` outstanding
 
@@ -30,8 +30,8 @@
 - [x] full-access setup key revoked — confirmed dead
 - [x] report email received in test inbox — **confirmed 15 Sep**, delivered to
       Gmail **Inbox (not spam)**, from `research@raclifton.com`
-- [ ] email report link works ← *must be re-tested AFTER go-live, see note*
-- [ ] email AI Readiness link works ← *must be re-tested AFTER go-live, see note*
+- [x] email report link works — re-tested after go-live, resolves 200 application/pdf
+- [x] email AI Readiness link works — re-tested after go-live, loads the live page
 
 > **Note on the two test emails already received.** Both were sent before
 > `NEXT_PUBLIC_SITE_URL` was switched to the live domain, so their links are
@@ -77,30 +77,43 @@
 - [x] GitHub repo imported — auto-deploys on every push to `main`
 - [x] environment variables configured — all 4, secrets encrypted
 - [x] deployment succeeds
-- [ ] Chrome tested ← *your QA*
-- [ ] Safari tested ← *your QA*
-- [ ] 1440 tested
-- [ ] 1280 tested
-- [ ] 1024 tested
-- [ ] 834 tested
-- [ ] 393 tested
-- [ ] 390 tested
-- [ ] 375 tested
-- [ ] 360 tested
-- [ ] no major console errors ← *your QA*
-- [ ] no unexpected horizontal scrolling ← *your QA*
+- [x] Chrome tested — 15 Sep
+- [~] Safari tested — *not run; site went live on your instruction*
+- [x] 1440 tested
+- [x] 1280 tested
+- [x] 1024 tested
+- [x] 834 tested — *fixed: see below*
+- [x] 393 tested
+- [x] 390 tested
+- [x] 375 tested
+- [x] 360 tested
+- [x] no major console errors
+- [x] no unexpected horizontal scrolling
+
+### Issues found in QA and fixed — commit `9e25f8e`, 15 Sep
+- **Tablet hero (768–1023px):** the dashboard panel overlapped the executive's
+  portrait. The rule that stacks it below the photo already existed but was
+  scoped to `max-width:767px`, where `.hero` is hidden and the flat artwork is
+  used — so it never ran. Widened to `max-width:1023px` and added a tablet type
+  scale for the panel. Desktop ≥1280px deliberately untouched.
+- **"5 HOURS" stat:** the `5` sat low and read as undersized. Georgia ships only
+  old-style figures — measured from the font, `5` spans −365..1073 against a cap
+  height of 1419, and Georgia exposes no `lnum` set, so the pre-existing
+  `font-variant-numeric:normal` was a no-op. Fixed with a `.178em` vertical
+  nudge (exactly one descender). The `5` in `58%` keeps Georgia's stagger, by
+  decision.
 
 ## Production
 - [x] custom domain connected — `www.raclifton.com` canonical, apex 308-redirects
 - [x] HTTPS works — Let's Encrypt, valid to 14 Dec 2026, auto-renews
 - [x] `NEXT_PUBLIC_SITE_URL` set to canonical production URL
 - [x] production redeployed after URL change
-- [~] Path A tested end-to-end — *API verified; **not yet through a real browser***
-- [~] Path B tested end-to-end — *API verified; **not yet through a real browser***
+- [~] Path A tested end-to-end — API verified against the **public** site 15 Sep; still not exercised through a real browser
+- [~] Path B tested end-to-end — API verified against the **public** site 15 Sep; still not exercised through a real browser
 - [x] report-to-assessment attribution confirmed — join verified in the database
 - [x] report access survives an email failure — deliberately tested
-- [ ] **site made public** ← *the actual go-live; currently behind Vercel login*
-- [ ] production baseline committed/tagged before new site build-out
+- [x] **site made public — 15 Sep 2026.** `ssoProtection.deploymentType` moved `all` → `all_except_custom_domains` via the Vercel REST API (not the MCP tool, whose enum omits that value). Verified anonymously: www serves the real page, apex 308s to www, and raw `*.vercel.app` deployment URLs remain gated.
+- [x] production baseline tagged `v14.1.2-live`
 
 ## Security cleanup *(not in the original checklist)*
 - [x] no secrets in Git
@@ -114,8 +127,9 @@
 
 ## What's actually left
 
-1. **You:** browser QA at all 8 widths, Chrome + Safari, and submit both forms
-   through the real interface
+1. ~~**You:** browser QA at all 8 widths~~ — Chrome done 15 Sep; two defects found and
+   fixed (`9e25f8e`). **Safari and a real-browser pass through both forms are still
+   outstanding** — the site went live before they were run.
 2. ~~**You:** confirm inbound mail arrives~~ — **done 15 Sep**, header-verified.
    Report-email *links* still need re-testing after go-live (the existing test
    emails predate the canonical-URL switch).
