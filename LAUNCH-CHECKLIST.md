@@ -46,7 +46,23 @@
 - [x] rule `research@raclifton.com` → Gmail, enabled
 - [x] catch-all left disabled (correct — prevents spam)
 - [x] confirmed Resend sending records untouched by the change
-- [~] round-trip test sent — *awaiting your confirmation it arrived*
+- [x] **inbound forwarding verified end-to-end — 15 Sep.** Sent from
+      `racliftoncpa@gmail.com` → `research@raclifton.com`, no Cc/Bcc, so
+      forwarding was the only possible delivery route. Landed in the Gmail
+      **Inbox**. Raw headers confirm the Cloudflare hop:
+      `Received: from ba-eg.cloudflare-email.net [104.30.10.46]`,
+      `X-Forwarded-For: research@raclifton.com smartofficecentral@gmail.com`,
+      and an SRS-rewritten `Return-Path: <SRS0=…@raclifton.com>`.
+      Auth all green at Google: `spf=pass dkim=pass dmarc=pass`,
+      `X-CF-SpamH-Score: 0`.
+
+> **Don't re-test this with a Bcc to yourself, or from an `@raclifton.com`
+> sender.** A Bcc to the destination mailbox delivers a direct Gmail-to-Gmail
+> copy that looks identical in the UI while the real forwarded copy is silently
+> deduplicated by Message-ID — the test then proves nothing. Separately,
+> Cloudflare Email Routing will not accept mail whose sender domain is
+> `raclifton.com` itself (loop prevention), so Resend cannot be used as the
+> test sender. Use a third-party address with no Cc/Bcc, and read the headers.
 
 ## GitHub
 - [x] repository is private — anonymous access returns 404
@@ -100,7 +116,9 @@
 
 1. **You:** browser QA at all 8 widths, Chrome + Safari, and submit both forms
    through the real interface
-2. **You:** confirm the test emails arrived and their links work
+2. ~~**You:** confirm inbound mail arrives~~ — **done 15 Sep**, header-verified.
+   Report-email *links* still need re-testing after go-live (the existing test
+   emails predate the canonical-URL switch).
 3. **Claude:** flip the site public — one setting change
 4. **Claude:** delete the temporary token files
 5. **Then:** tag the production baseline before any new build-out

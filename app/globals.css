@@ -650,8 +650,13 @@ footer{padding:48px 0 36px;background:#051119;color:white} .foot{display:grid;ga
 }
 
 
-/* === MOBILE HERO FIX: dashboard may never cover the executive's face === */
-@media(max-width:767px){
+/* === MOBILE + TABLET HERO FIX: dashboard may never cover the executive's face ===
+   Widened from 767 to 1023 (15 Sep 2026). Below 768 the flat mobile artwork is
+   used and .hero is hidden, so this block never actually ran. At 768-1023 the
+   LIVE hero renders and the absolutely-positioned .dash sat over the portrait.
+   Stacking it under the photo reproduces the approved 393px arrangement.
+   The !important flags override the .dash offsets set in the 768-1023 block. */
+@media(max-width:1023px){
   .hero-visual{
     display:flex;
     flex-direction:column;
@@ -669,6 +674,21 @@ footer{padding:48px 0 36px;background:#051119;color:white} .foot{display:grid;ga
     margin:0 !important;
     border-radius:10px;
   }
+}
+
+/* Dashboard type is sized for a 216-270px overlay card. Stacked at tablet it
+   spans the full 720px column, so scale it up to keep the approved 393px
+   proportions rather than leaving tiny type marooned in a wide panel. */
+@media(min-width:768px) and (max-width:1023px){
+  .dash{padding:20px}
+  .dash small{font-size:12px;letter-spacing:.08em}
+  .metrics{gap:12px;margin-top:14px}
+  .metric{padding:14px 12px;border-radius:8px}
+  .metric span{font-size:10px;letter-spacing:.05em}
+  .metric strong{font-size:26px}
+  .metric em{font-size:11px;margin-top:3px}
+  .spark{height:96px;margin-top:12px}
+  .spark:after{top:52px;left:14px;right:14px}
 }
 
 /* === MOBILE CAROUSEL DISCOVERABILITY === */
@@ -998,7 +1018,15 @@ button,a,input{touch-action:manipulation}
 .why-ai-insight-text .why-ai-stat{font-size:clamp(34px,5vw,56px);letter-spacing:-.025em}
 .why-ai-stat-time{display:inline-flex;align-items:baseline;gap:.16em;white-space:nowrap}
 .why-ai-stat-time .why-ai-number,.why-ai-stat-time .why-ai-unit{display:inline-block;font-size:1em;line-height:.98;letter-spacing:-.04em}
-.why-ai-stat-time .why-ai-number{font-variant-numeric:normal}
+/* Georgia ships ONLY old-style figures. Measured from Georgia.ttf (2048 upem):
+   "5" spans -365..1073 while cap height ("H") is 0..1419 — so the glyph renders
+   short and hangs below the baseline next to the all-caps "HOURS". Georgia's
+   GSUB exposes only `aalt` and `locl`, i.e. there is no `lnum` lining-figure
+   set, so `font-variant-numeric` is a no-op here (it was tried previously).
+   Total glyph heights nearly match (1438 vs 1419), so the correct fix is a pure
+   vertical nudge of one descender: 365/2048em = .178em. Do not "simplify" this
+   back to a font property — it cannot work in this typeface. */
+.why-ai-stat-time .why-ai-number{transform:translateY(-.178em)}
 
 .why-ai-insight h3{margin:14px 0 0;font-size:20px;line-height:1.3;color:#172630;max-width:430px}
 .why-ai-insight p{margin:10px 0 0;color:#647078;font-size:13px;line-height:1.55;max-width:430px}
