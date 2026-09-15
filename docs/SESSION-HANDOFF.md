@@ -1,150 +1,176 @@
-# Session Handoff — 15 September 2026
+# Session Handoff — R.A. Clifton® Website
 
-**Session goal:** take the approved v14.1.2 Next.js site from local files to a
-live, secured deployment on `raclifton.com`.
+**Last updated:** 15 September 2026, end of session 2
+**Status:** 🟢 **LIVE** at https://www.raclifton.com
 
-**Outcome:** complete except for a human browser-QA pass and the final
-go-public switch.
+Operating detail and step-by-step procedures live in
+[OPERATIONS.md](OPERATIONS.md). Current checklist state lives in
+[../LAUNCH-CHECKLIST.md](../LAUNCH-CHECKLIST.md). A detailed account of how
+session 2 went is in [SESSION-2-TRANSCRIPT.md](SESSION-2-TRANSCRIPT.md).
 
-Operating detail and procedures live in [OPERATIONS.md](OPERATIONS.md).
-Current status lives in [../LAUNCH-CHECKLIST.md](../LAUNCH-CHECKLIST.md).
+---
+
+## Quick reference
+
+| Thing | Value |
+|---|---|
+| **Live site** | https://www.raclifton.com (public since 15 Sep 2026) |
+| **Apex** | https://raclifton.com → 308 → www |
+| **Production tag** | `v14.1.2-live` |
+| **Latest commit** | `f8095c2` |
+| **Vercel project** | `prj_jy6MvHCgCaSeTYqY9zRACtcL2eoC` |
+| **Vercel team** | `team_UKZCLZYnq61v3vUYRQsJMoBr` |
+| **Cloudflare zone** | `a6300e75ca596fef9695eb21fe9d8441` |
+| **Cloudflare account** | `5f241903ddae66f188647be0e53f2077` |
+| **Neon project** | `billowing-union-62928118` |
+| **Protection setting** | `ssoProtection.deploymentType = all_except_custom_domains` |
+| **Vercel token expires** | **14 October 2026** |
+| **TLS cert expires** | 14 December 2026 (auto-renews) |
+| **Project root** | `~/Desktop/Claude Code Projects_temp d260629/ra-clifton-website/ra-clifton-website` |
+| **Revised research report** | `~/Desktop/RA_Clifton_AI_for_Small_Business_v2_2_REVISED.pdf` |
+| **Report review page** | https://claude.ai/artifact/3mFdeShK3sQMJtPji5GNJ8 |
+
+Credentials: `.env.local` (app), `~/.raclifton-setup-tokens` (Cloudflare +
+Vercel), `~/.raclifton-db` (Neon). Never committed, never pasted into chat.
 
 ---
 
 ## Continuation prompt
 
-Paste this into a **new Claude Code session** started from the project root to
-resume with full context.
+Paste this into a **new Claude Code session** started from the project root.
 
 ```text
 Resume work on the R.A. Clifton website (v14.1.2).
 
 Read these first, in order:
-  1. CLAUDE.md                 - locked scope and change discipline
-  2. docs/OPERATIONS.md        - full operating manual, credentials map, SOPs
-  3. LAUNCH-CHECKLIST.md       - what is done vs outstanding
-  4. docs/SESSION-HANDOFF.md   - this file
+  1. CLAUDE.md                     - locked scope and change discipline
+  2. docs/OPERATIONS.md            - operating manual, credentials map, SOPs
+  3. LAUNCH-CHECKLIST.md           - what is done vs outstanding
+  4. docs/SESSION-HANDOFF.md       - this file
+  5. docs/SESSION-2-TRANSCRIPT.md  - how the launch session actually went
 
 STATE AS OF 15 SEP 2026
-The site is fully deployed and working at https://www.raclifton.com but is
-deliberately PRIVATE - Vercel Authentication is set to "all", which gates the
-custom domain as well as the vercel.app URLs. Anonymous visitors get a Vercel
-login page and zero site content. This was intentional: the domain was attached
-early so DNS could propagate during QA.
+The site is LIVE and public at https://www.raclifton.com. Deployment
+protection is set to "all_except_custom_domains", so the custom domain is
+public while raw *.vercel.app deployment URLs stay gated behind Vercel login.
+Production baseline is tagged v14.1.2-live. Both lead tables are at 0 rows.
 
-Verified working on the live site (via API, not a browser):
-  - homepage and the 1.2MB research PDF serve correctly
-  - research-report form writes to Neon with correct attribution values
-  - email sends from research@raclifton.com, email_sent flips to true
-  - report access still works when email delivery fails (deliberately tested)
-  - assessment form writes to Neon and links back to the report lead
-  - HTTPS via Let's Encrypt, valid to 14 Dec 2026
-  - Cloudflare Email Routing forwards research@raclifton.com to
-    smartofficecentral@gmail.com
+Verified working on the public site (via API, not a browser):
+  - homepage, the 1.2MB research PDF, and the apex redirect
+  - research-report form writes to Neon and sends email (email_sent=true)
+  - assessment form writes to Neon and joins back to the report lead
+  - report email links point at www.raclifton.com and resolve
+  - inbound mail to research@raclifton.com forwards to Gmail (header-verified)
 
-Both database tables are empty. Test data was deleted.
+THE ONE REAL GAP
+Neither lead form has been submitted through an actual browser. Every test
+has gone straight to the API, which bypasses the sessionStorage handoff that
+carries rac_research_lead_id from the research report modal to the assessment
+form. The database join is proven; the browser step that populates it is not.
+If it is broken, live attribution silently records null.
 
-OUTSTANDING
-  1. Clifton's browser QA: 8 widths (1440/1280/1024/834/393/390/375/360),
-     Chrome + Safari, plus submitting BOTH forms through the real UI in order
-     (research report first, then assessment) to exercise the session-storage
-     attribution that API tests bypassed.
-  2. Confirm the "Round-trip test - reply routing" email arrived in Gmail.
-     This is the only proof that INBOUND mail works. Sending is confirmed.
-  3. Go public: PATCH ssoProtection.deploymentType from "all" back to
-     "all_except_custom_domains" on Vercel project
-     prj_jy6MvHCgCaSeTYqY9zRACtcL2eoC. Do NOT use the MCP tool for this - its
-     enum lacks that value and using the nearest option leaves the main alias
-     publicly readable. Use the REST API directly.
-  4. Delete ~/.raclifton-setup-tokens and ~/.raclifton-db once go-live is done.
-  5. Tag the production baseline before any new site build-out.
-  6. After go-live, re-test the links inside a freshly generated report email.
-     The existing test emails predate the canonical-URL switch and point at
-     localhost and the old vercel.app address respectively.
+To close it: open https://www.raclifton.com in ONE tab, submit the research
+report form, then click "Discover Your AI Readiness Score" from the success
+screen and submit the assessment form. Do not reload or open a new tab
+between the two. Then query the join (OPERATIONS.md SOP 2) to confirm
+research_report_lead_id is populated rather than null.
+
+Safari has also never been opened against the site.
+
+OTHER OPEN ITEMS
+  1. Delete ~/.raclifton-setup-tokens and ~/.raclifton-db when Clifton says
+     so. Not done automatically - the Vercel token is the only way to change
+     deployment protection from here, and the Neon URL the only way to read
+     leads outside the app.
+  2. Vercel token expires 14 Oct 2026. See OPERATIONS.md SOP 4.
+  3. The revised research report PDF has not been published to the site. The
+     live /research/ PDF is still the older file. Swapping it is a decision
+     Clifton has not made yet.
+  4. Two elements are intentionally inert in the approved baseline: the header
+     hamburger menu and the five "Not sure where to start?" chips. Both have
+     styling but no JavaScript. Do not "fix" them without explicit approval.
 
 CONSTRAINTS
   - CLAUDE.md governs: smallest safe changes only. No redesign, no Tailwind,
     no ORM, no refactors, no dependency upgrades without a concrete reason.
   - Never paste secrets into chat. Use the scoped-api-token-workflow skill.
-  - Credentials: .env.local (app), ~/.raclifton-setup-tokens (Cloudflare +
-    Vercel + Cloudflare email), ~/.raclifton-db (Neon). Never commit these.
   - The project root is nested: ra-clifton-website/ra-clifton-website
+  - Do NOT use the Vercel MCP tool to change deployment protection. Its enum
+    omits "all_except_custom_domains" and the nearest option leaves the main
+    alias publicly readable. Use the REST API.
 
-Start by confirming current state rather than trusting this summary:
-check git status, that the build passes, and whether the site is still gated.
+Start by confirming current state rather than trusting this summary: check
+git status, that the build passes, and that the site is still publicly
+reachable while *.vercel.app URLs are still gated.
 ```
 
 ---
 
-## What happened, in sequence
+## What happened in session 2
 
 | # | Step | Result |
 |---|---|---|
-| 1 | `npm install` | 30 packages, 0 vulnerabilities |
-| 2 | First production build | **Failed** — TypeScript error TS2352 |
-| 3 | Fixed the handler type in `V12ClientController.tsx` | Build passed |
-| 4 | Created `.env.local` | |
-| 5 | Added `raclifton.com` to Resend, wrote 3 DNS records via API | Domain verified |
-| 6 | Connected Neon, ran migrations 001 → 002 | Schema + attribution FK verified |
-| 7 | Tested both lead paths locally, including forced email failure | All passed |
-| 8 | `git init`, baseline commit, pushed to private GitHub repo | 35 files, no secrets |
-| 9 | Created Vercel project linked to GitHub | Auto-deploy on push enabled |
-| 10 | Set 4 environment variables, redeployed | |
-| 11 | Tested both lead paths on the **live** site | All passed |
-| 12 | Deleted test leads; rotated Resend key to sending-only; revoked old key | Tables at 0 rows |
-| 13 | Attached `www.raclifton.com` + apex redirect, wrote DNS via API | Let's Encrypt cert issued |
-| 14 | Extended Vercel Auth to cover custom domains **before** attaching | No exposure window |
-| 15 | Set up Cloudflare Email Routing | Replies forward to Gmail |
-| 16 | Wrote OPERATIONS.md, updated LAUNCH-CHECKLIST.md | Committed and pushed |
+| 1 | Confirmed real state vs the day-1 summary | Site still gated, tree clean |
+| 2 | Proved inbound email forwarding works | Took 4 attempts — see below |
+| 3 | Browser QA at 8 widths, Chrome | Passed; 2 defects found |
+| 4 | Fixed tablet hero overlap and the "5 HOURS" numeral | Commit `9e25f8e` |
+| 5 | Reviewed the research report | 14 issues raised |
+| 6 | Rebuilt the report as a 14-page PDF + web review page | Overflow check caught a real clipping bug |
+| 7 | Verified every load-bearing figure against its source | One restored, one corrected |
+| 8 | Made the site public, tested both paths, tagged baseline | Commit `7885e4b`, tag `v14.1.2-live` |
+
+---
 
 ## Decisions worth not relitigating
 
-**Only one line of site code changed.** The build failure was a type-level
-mismatch: a submit handler typed `SubmitEvent` registered as a general
-`EventListener`. Widening the parameter to `Event` fixed it with zero runtime
-or layout change. Nothing else in the approved site was touched.
+**The stacked tablet dashboard reuses an existing approved rule.** The CSS to
+stack the dashboard below the portrait already existed but was scoped to
+`max-width:767px`, where it never ran. Widening it to `1023px` was the minimal
+fix; no new layout was invented.
 
-**www is canonical; the apex 308-redirects to it.** Matches the runbook's
-`NEXT_PUBLIC_SITE_URL` and avoids splitting SEO across two hostnames.
+**The "5 HOURS" fix is a transform, not a font property, and cannot be
+otherwise.** Georgia ships only old-style figures and exposes no `lnum`
+OpenType feature. `font-variant-numeric` is a no-op in this typeface. The
+`.178em` nudge is exactly one descender depth, measured from the font file.
+There is a comment in `globals.css` saying so — do not "simplify" it.
 
-**Domain attached early, but gated.** DNS propagation is the slow part, so it
-was started during QA rather than after. Protection was widened to cover custom
-domains *before* attaching, so there was never an exposure window.
+**The `5` in `58%` deliberately keeps Georgia's stagger.** Fixing it would
+require changing the typeface for digits. Clifton chose surgical over
+consistent.
 
-**Least privilege, deliberately.** The Vercel token reaches only this project
-(the team holds five others). Cloudflare tokens are limited to this zone. The
-Resend key in production can send email and nothing else — the full-access key
-used during setup was revoked.
+**Desktop ≥1280px was deliberately left untouched** during the tablet fix.
 
-**No secret ever entered the chat.** Every credential was captured via a hidden
-terminal prompt writing to a `600`-permission file outside the repo. This
-pattern was extracted into the personal skill `scoped-api-token-workflow`.
+**The report PDF uses Baskerville, not Georgia.** Georgia and Charter both
+use old-style figures — the same problem just fixed on the site. In a
+numbers-heavy report that would have been a poor choice.
+
+**Nothing was published without a verified source.** Where a figure could not
+be confirmed it was flagged, never filled in with a plausible-looking citation.
+
+---
 
 ## Traps that cost time — don't re-learn these
 
 | Looked like | Actually was |
 |---|---|
-| "5 HOURS" missing from the page | Split across two `<span>`s for styling; plain-text search can't find it |
-| Python couldn't reach any API | python.org build on macOS ships without CA certificates — use `curl` |
-| GitHub SSH timed out | Port 22 blocked on this network — HTTPS works, keychain already had the credential |
-| Live site returned "200 OK" while supposedly locked | `curl -L` had followed the redirect to Vercel's *login page*, which returns 200. **Check the landing page, not the status code.** |
-| Email Routing missing from Cloudflare's Email menu | Moved to **Compute → Email Service → Email Routing**, at account level |
-| Vercel Auth restore appeared to succeed but left the alias open | The MCP tool's enum omits `all_except_custom_domains`; the nearest option only protects raw deployment URLs. Restored via REST API. |
+| Inbound email test succeeded | It was the **Bcc copy**, delivered Gmail-to-Gmail. The real forwarded copy was deduplicated by `Message-ID`. Check `Return-Path` for an SRS rewrite and look for a `cloudflare-email.net` hop. |
+| Cloudflare was rejecting Claude's test mail | Cloudflare refuses mail whose **sender domain is the routed domain** (loop prevention). Resend can only send from `raclifton.com`, so it can never be the test sender. |
+| A report email had a truncated UUID | Quoted-printable encoding. `rr=3D3ddc0e5a…` decodes to `rr=3ddc0e5a…`. Gmail's text extractor mis-decoded it; the raw bytes were fine. |
+| The "5" was a CSS alignment bug | Georgia's **old-style figures**. The `5` glyph spans −365..1073 against a cap height of 1419. Not fixable with a font property. |
+| The page looked fine in the PDF | Page 7 was **clipping an entire paragraph**. Fixed-height pages hide overflow silently — measure it, don't eyeball it. |
+| A data point looked fabricated | The 2024 "40%" was **real** — it was missing from the prose, not invented. Verify before deleting. |
+| `next-env.d.ts` showed as modified | `next dev` rewrites it to `.next/dev/types/`. Never commit that — revert it and re-run `npm run build` before committing. |
 
-**Cloudflare appends the zone to DNS record names.** If a service says to create
-`send.raclifton.com`, type only `send`. The full name creates
-`send.raclifton.com.raclifton.com`, which looks correct and never verifies.
+Also still true from day 1: `curl -L` follows redirects to Vercel's login page,
+which returns **200**. Check the landing page content, not the status code.
 
-## Known-good reference points
+---
 
-| | |
-|---|---|
-| Last commit | `570d510` |
-| Baseline commit | `521b78e` |
-| Vercel project | `prj_jy6MvHCgCaSeTYqY9zRACtcL2eoC` |
-| Vercel team | `team_UKZCLZYnq61v3vUYRQsJMoBr` |
-| Cloudflare zone | `a6300e75ca596fef9695eb21fe9d8441` |
-| Cloudflare account | `5f241903ddae66f188647be0e53f2077` |
-| Neon project | `billowing-union-62928118` |
-| Vercel token expires | **14 October 2026** |
-| TLS cert expires | 14 December 2026 (auto-renews) |
+## Current state
+
+- Site public, HTTPS, apex redirecting, deployment URLs still gated
+- Both lead tables at 0 rows, ready for real leads
+- Inbound and outbound email both proven end-to-end
+- Production baseline tagged, working tree clean, in sync with GitHub
+- Revised research report exists as a PDF and a web page, **not yet published
+  to the site**

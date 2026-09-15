@@ -1,7 +1,8 @@
 # R.A. Clifton® Website — Operations Manual
 
-**Last updated:** 15 September 2026
-**Covers:** v14.1.2 deployment — local setup through live custom domain
+**Last updated:** 15 September 2026 (session 2 — launch)
+**Covers:** v14.1.2 — local setup through public launch
+**Status:** 🟢 LIVE at https://www.raclifton.com · tagged `v14.1.2-live`
 
 This document exists so you (or a future Claude Code session) can pick up this
 project without re-reading a transcript or re-explaining anything. It records
@@ -17,8 +18,10 @@ they are stored.
 
 | Thing | Value |
 |---|---|
-| **Live site** | https://www.raclifton.com (canonical) |
-| | https://raclifton.com → redirects to www |
+| **Live site** | https://www.raclifton.com — **public since 15 Sep 2026** |
+| | https://raclifton.com → 308 redirect to www |
+| **Production tag** | `v14.1.2-live` |
+| **Protection** | `ssoProtection.deploymentType = all_except_custom_domains` (domain public, `*.vercel.app` gated) |
 | **Vercel URL** | https://ra-clifton-website-raclifton.vercel.app |
 | **Project folder** | `~/Desktop/Claude Code Projects_temp d260629/ra-clifton-website/ra-clifton-website` |
 | **GitHub repo** | `RAClifton/ra-clifton-website` (**private**) |
@@ -182,12 +185,14 @@ you to create `send.raclifton.com`, you type only `send` into Cloudflare.
 Typing the full name creates `send.raclifton.com.raclifton.com`, which looks
 right in the dashboard and never works.
 
-### Current state (as of 15 September 2026)
+### Current state (as of 15 September 2026, end of session 2)
 
-Everything is built, deployed, tested and secured. The site sits at
-`https://www.raclifton.com` behind a Vercel login.
+🟢 **The site is LIVE and public** at `https://www.raclifton.com`. Deployment
+protection is set to `all_except_custom_domains`, so the custom domain serves
+everyone while raw `*.vercel.app` deployment URLs stay behind Vercel login.
+The production baseline is tagged `v14.1.2-live`.
 
-Verified working on the **live** site, not just locally:
+Verified working on the **public** site, not just locally:
 
 - Homepage and the 1.2 MB research PDF serve correctly
 - Research-report form writes to Neon with correct attribution values
@@ -204,15 +209,27 @@ anything that appears from now on is a real lead.
 
 | # | Item | Owner |
 |---|---|---|
-| 1 | Browser QA at 8 widths in Chrome and Safari; submit both forms through the actual UI | **Clifton** |
-| 2 | Flip the site public (one setting change) | Claude, once QA passes |
-| 3 | Delete `~/.raclifton-setup-tokens` and `~/.raclifton-db` | Claude, after #2 |
-| 4 | Vercel token expires **14 October 2026** | Note only — see SOP 4 |
+| 1 | **Submit both forms through a real browser, in one tab, in order** — see SOP 6 | **Clifton** |
+| 2 | Safari pass at a couple of widths | **Clifton** |
+| 3 | Decide whether to publish the revised research report PDF to the site | **Clifton** |
+| 4 | Delete `~/.raclifton-setup-tokens` and `~/.raclifton-db` | Claude, on your say-so |
+| 5 | Vercel token expires **14 October 2026** | Note only — see SOP 4 |
 
-**Why the QA still matters:** every test so far called the site's APIs
-directly, bypassing all the browser JavaScript. The form wiring, the stored
-session data that carries attribution between the two paths, and the success
-messages have not been exercised by a real browser.
+**Why item 1 still matters, even though the site is live.** Every test so far
+called the site's APIs directly, which bypasses all the browser JavaScript.
+When someone requests the research report, the page quietly stores an ID in
+that browser tab; the assessment form later reads it back and that is what
+links the two records together. API calls set that ID by hand, so they prove
+the *database* join works — not the browser step that fills it in.
+
+If that step is broken, real attribution silently records `null` and nothing
+will alert you. It is fifteen minutes of work to rule out. See SOP 6.
+
+**Two elements are intentionally inert** in the approved design: the header
+hamburger menu and the five "Not sure where to start?" chips. Both have
+styling but no code behind them. They are not bugs — `CLAUDE.md` forbids
+behaviour changes — but they are also not finished features. Raise them
+deliberately if you ever want them working.
 
 ---
 
@@ -426,6 +443,159 @@ thousands of guessed addresses.
 
 ---
 
+### SOP 6 — Prove the two lead paths work through a real browser
+
+**Do this once.** It is the only outstanding gate on the launch. It tests the
+browser step that links an assessment lead back to the research report that
+introduced them — something no API test can check.
+
+**The rule: one tab, in order, no reloads.** The link is carried in the
+browser tab's temporary memory. Opening a new tab, reloading, or doing the
+assessment first will break it, and the test will look like a failure when it
+is really just the wrong order.
+
+1. Open **https://www.raclifton.com** in Chrome. One tab.
+2. Scroll to **"AI for Small Business: The Case for Starting Now."**
+3. Click **Get the Research Report →**. A popup opens.
+4. Enter a name you will recognise later — use `QA Test` and your own email.
+5. Click **Get the Research Report →**. Within a few seconds you should see a
+   success screen with **Read Report →**, **Download PDF**, and a link to the
+   AI Readiness Score.
+6. **Do not close the tab.** In that same popup, click
+   **Discover Your AI Readiness Score™ →**. The popup closes and the page
+   scrolls to the form.
+7. Tick two or three checkboxes.
+8. Enter the **same** name and email.
+9. Click **Get Started →**. Expect **"Thank you. Your information has been
+   received."**
+10. Ask Claude to run the attribution check below. The answer you want is a
+    row where `joined` is `true` — not `null`.
+
+```bash
+cd "<project root>"
+node --input-type=module -e '
+import fs from "node:fs";
+import { neon } from "@neondatabase/serverless";
+const url = fs.readFileSync(process.env.HOME + "/.raclifton-db","utf8")
+  .split("\n").find(l=>l.startsWith("DATABASE_URL=")).slice(13).trim();
+const sql = neon(url);
+console.table(await sql`
+  SELECT w.full_name, w.cta_origin, r.full_name AS report_lead, r.email_sent,
+         (w.research_report_lead_id = r.id) AS joined
+  FROM website_leads w
+  LEFT JOIN research_report_leads r ON r.id = w.research_report_lead_id
+  ORDER BY w.created_at DESC LIMIT 5`);
+'
+```
+
+11. **Delete the test rows afterwards** so your lead tables stay clean:
+
+```bash
+node --input-type=module -e '
+import fs from "node:fs";
+import { neon } from "@neondatabase/serverless";
+const url = fs.readFileSync(process.env.HOME + "/.raclifton-db","utf8")
+  .split("\n").find(l=>l.startsWith("DATABASE_URL=")).slice(13).trim();
+const sql = neon(url);
+await sql`DELETE FROM website_leads WHERE full_name = ${"QA Test"}`;
+await sql`DELETE FROM research_report_leads WHERE full_name = ${"QA Test"}`;
+console.log("purged");
+'
+```
+
+**If `joined` comes back `null`:** the browser handoff is broken. That is a
+real bug worth fixing — tell Claude, and point it at
+`components/V12ClientController.tsx` and
+`components/ResearchReportLeadMagnet.tsx`, which read and write
+`rac_research_lead_id` in session storage.
+
+---
+
+### SOP 7 — Take the site public, or put it back behind a login
+
+You will need this if you ever want to hide the site again — during a big
+redesign, for example.
+
+**Do not use the Vercel MCP tool for this.** Its list of options omits the one
+you need, and the closest alternative leaves your main address publicly
+readable while appearing to have worked. Use the REST API.
+
+1. Load the Vercel token:
+
+```bash
+set -a; . ~/.raclifton-setup-tokens; set +a
+P=prj_jy6MvHCgCaSeTYqY9zRACtcL2eoC
+T=team_UKZCLZYnq61v3vUYRQsJMoBr
+```
+
+2. Check the current setting:
+
+```bash
+curl -sS -H "Authorization: Bearer $VERCEL_TOKEN" \
+  "https://api.vercel.com/v9/projects/$P?teamId=$T" \
+  | python3 -c "import sys,json;print(json.load(sys.stdin).get('ssoProtection'))"
+```
+
+3. Change it. The value you want depends on the goal:
+
+| Goal | `deploymentType` |
+|---|---|
+| **Public site** (normal) | `all_except_custom_domains` |
+| **Fully private**, including raclifton.com | `all` |
+
+```bash
+curl -sS -X PATCH -H "Authorization: Bearer $VERCEL_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"ssoProtection":{"deploymentType":"all_except_custom_domains"}}' \
+  "https://api.vercel.com/v9/projects/$P?teamId=$T" \
+  | python3 -c "import sys,json;print(json.load(sys.stdin).get('ssoProtection'))"
+```
+
+4. **Verify by reading the page, not the status code.** A gated site returns
+   `200` — because Vercel's login page is itself a working page. This has
+   fooled two sessions now.
+
+```bash
+curl -sS -o /tmp/check.html -L https://www.raclifton.com
+grep -o '<title>[^<]*</title>' /tmp/check.html   # want R.A. Clifton, not "Login – Vercel"
+grep -c 'vercel.com/login' /tmp/check.html        # want 0 when public
+```
+
+5. When public, also confirm the raw deployment URLs are **still** gated —
+   that is the difference between the two settings, and the thing the MCP tool
+   gets wrong:
+
+```bash
+curl -sS -L https://ra-clifton-website-raclifton.vercel.app \
+  | grep -o '<title>[^<]*</title>'    # want "Login – Vercel"
+```
+
+---
+
+### SOP 8 — Replace the research report PDF on the site
+
+The report is a plain file, not a database record. Swapping it is a normal
+site change.
+
+1. Put the new PDF in `public/research/`.
+2. **Keep the existing filename**
+   (`ai-for-a-small-business-the-case-for-starting-now.pdf`) unless you have a
+   reason not to. Every report email ever sent points at that exact path — if
+   you rename it, all those links break.
+3. Follow **SOP 1** to publish (build, commit, push; Vercel deploys itself).
+4. Confirm the live file is actually the new one — check the byte size
+   changed, not just that it loads:
+
+```bash
+curl -sS -o /dev/null -w "%{http_code} %{content_type} %{size_download}\n" -L \
+  https://www.raclifton.com/research/ai-for-a-small-business-the-case-for-starting-now.pdf
+```
+
+5. Hard-refresh in your browser (**⌘⇧R**) before deciding it hasn't updated —
+   PDFs cache aggressively.
+
+---
+
 ## 4. Things worth knowing
 
 **The project folder is nested.** The real project is one level deeper than you
@@ -440,9 +610,21 @@ and build modes. Both are normal. Commit them; don't fight them.
 few seconds to wake. A first slow request after a quiet period is expected, not
 a fault.
 
-**Vercel Authentication is what's keeping the site private.** Once it's turned
-off, the site is public to everyone including search engines. That's the actual
-go-live moment.
+**Vercel Authentication was what kept the site private.** It was switched on
+15 September 2026 so the custom domain is public while raw deployment URLs
+stay gated. See SOP 7 to reverse it.
+
+**A gated Vercel site returns `200`, not `403`.** Vercel's login page is a
+working page, so any check based on the status code will report success on a
+site nobody can see. Always read the page title or look for
+`vercel.com/login` in the body.
+
+**Georgia has old-style figures.** Its digits deliberately vary in height —
+`5`, `3`, `4`, `7` and `9` hang below the baseline; `6` and `8` rise above
+it. The site uses Georgia for headings and big numbers, so any new stat may
+look misaligned. It is the typeface, not a CSS bug, and no font property can
+change it — Georgia ships no lining-figure set. `globals.css` has a worked
+example with the measurements.
 
 **Email delivery is deliberately not a blocker.** If Resend is down, the
 visitor still gets their report immediately and the lead is still saved. The
