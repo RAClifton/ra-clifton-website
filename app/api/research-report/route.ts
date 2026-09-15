@@ -29,8 +29,8 @@ async function sendReportEmail(email: string, fullName: string, leadId: string) 
       from,
       to: [email],
       subject: "Your R.A. Clifton Research Report",
-      text: `Hello ${fullName},\n\nYour research report is ready: ${reportUrl}\n\nWhen you're ready, discover your AI readiness: ${readinessUrl}\n\nR.A. Clifton®`,
-      html: `<p>Hello ${fullName},</p><p>Your R.A. Clifton® research report is ready.</p><p><a href="${reportUrl}">Read / Download the Research Report</a></p><p>When you're ready for the next step: <a href="${readinessUrl}">Discover Your AI Readiness Score™</a>.</p><p>R.A. Clifton®</p>`,
+      text: `Hello ${fullName},\n\nYour research report is ready: ${reportUrl}\n\nWhen you're ready, discover your AI readiness: ${readinessUrl}\n\nR.A. Clifton™`,
+      html: `<p>Hello ${fullName},</p><p>Your R.A. Clifton™ research report is ready.</p><p><a href="${reportUrl}">Read / Download the Research Report</a></p><p>When you're ready for the next step: <a href="${readinessUrl}">Discover Your AI Readiness Score™</a>.</p><p>R.A. Clifton™</p>`,
     }),
   });
   return response.ok;
