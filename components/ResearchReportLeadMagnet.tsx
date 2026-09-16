@@ -3,6 +3,19 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 
 const REPORT_PATH = "/research/ai-for-a-small-business-the-case-for-starting-now.pdf";
 
+/**
+ * sessionStorage throws SecurityError in Safari with "Block All Cookies" and in
+ * some in-app browsers. Attribution memory is a convenience; the report handoff
+ * is the conversion. Never let a storage failure surface as an error here.
+ */
+function safeSet(key: string, value: string): void {
+  try {
+    window.sessionStorage.setItem(key, value);
+  } catch {
+    // Best effort only.
+  }
+}
+
 export default function ResearchReportLeadMagnet() {
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
@@ -37,7 +50,7 @@ export default function ResearchReportLeadMagnet() {
       const r = await fetch("/api/research-report", { method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({ fullName:fd.get("fullName"), email:fd.get("email"), ctaOrigin:"why_ai_research_section" }) });
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(data.error || "Unable to prepare the report right now.");
-      sessionStorage.setItem("rac_research_lead_id", data.leadId);
+      if (data.leadId) safeSet("rac_research_lead_id", data.leadId);
       setReportUrl(data.reportUrl || REPORT_PATH);
       setDone(true);
       setStatus(data.emailSent ? "A copy has also been sent to your email." : "Your report is ready now.");
@@ -68,7 +81,7 @@ export default function ResearchReportLeadMagnet() {
           <a className="report-primary" href={reportUrl} target="_blank" rel="noreferrer">Read Report →</a>
           <a className="report-secondary" href={reportUrl} download>Download PDF</a>
         </div>
-        <a className="report-readiness-link" href="#assessment-interest" onClick={()=>{ sessionStorage.setItem("rac_cta_origin","research_report_success"); setOpen(false); }}>Discover Your AI Readiness Score™ →</a>
+        <a className="report-readiness-link" href="#assessment-interest" onClick={()=>{ safeSet("rac_cta_origin","research_report_success"); setOpen(false); }}>Discover Your AI Readiness Score™ →</a>
         <div className="report-modal-status" aria-live="polite">{status}</div>
       </div>}
     </div>

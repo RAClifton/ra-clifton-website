@@ -14,12 +14,66 @@ type LeadPayload = {
   researchReportLeadId?: string;
 };
 
+/**
+ * sessionStorage is not guaranteed to exist.
+ *
+ * Safari with "Block All Cookies" enabled, and several in-app browsers
+ * (Instagram, LinkedIn), throw SecurityError on the very first property access.
+ * Because every listener in this file is registered inside ONE mount effect, an
+ * unguarded throw would abort the effect body at that line and everything
+ * declared after it — including the lead form's submit listener — would never
+ * register. The form would then fall back to a native GET submit and the lead
+ * would be lost silently.
+ *
+ * So: every sessionStorage access in this file goes through these helpers.
+ * Storage is treated as a best-effort convenience. When it is unavailable the
+ * site stays fully functional — chips select, the recommendation appears, the
+ * form submits and the lead is captured. Only cross-page memory degrades.
+ */
+function safeGet(key: string): string | null {
+  try {
+    return window.sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function safeSet(key: string, value: string): void {
+  try {
+    window.sessionStorage.setItem(key, value);
+  } catch {
+    // Storage unavailable or full. Persisting is best-effort by design.
+  }
+}
+
+function safeGetJSON<T>(key: string, fallback: T): T {
+  const raw = safeGet(key);
+  if (raw === null || raw === "") return fallback;
+  try {
+    const parsed = JSON.parse(raw) as T;
+    return parsed === null || parsed === undefined ? fallback : parsed;
+  } catch {
+    return fallback;
+  }
+}
+
+function randomReferralCode() {
+  try {
+    // crypto.randomUUID is undefined outside secure contexts; never let it throw
+    // here, because this runs eagerly at mount (see safeGet's note above).
+    return `rac_${crypto.randomUUID().replaceAll("-", "").slice(0, 12)}`;
+  } catch {
+    return `rac_${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36).slice(-4)}`;
+  }
+}
+
+/** Always returns a usable code. Persisting it across pages is best-effort. */
 function buildSessionReferralCode() {
   const key = "rac_referral_code";
-  const existing = sessionStorage.getItem(key);
+  const existing = safeGet(key);
   if (existing) return existing;
-  const code = `rac_${crypto.randomUUID().replaceAll("-", "").slice(0, 12)}`;
-  sessionStorage.setItem(key, code);
+  const code = randomReferralCode();
+  safeSet(key, code);
   return code;
 }
 
@@ -31,7 +85,7 @@ export default function V12ClientController() {
     document.querySelectorAll<HTMLAnchorElement>('a[href="#assessment-interest"], a[href="#why-ai-now"]').forEach((a) => {
       const onClick = () => {
         const origin = (a.textContent || a.getAttribute("aria-label") || "assessment-cta").trim().replace(/\s+/g, " ");
-        sessionStorage.setItem("rac_cta_origin", origin.slice(0, 160));
+        safeSet("rac_cta_origin", origin.slice(0, 160));
       };
       a.addEventListener("click", onClick);
       cleanups.push(() => a.removeEventListener("click", onClick));
@@ -40,9 +94,9 @@ export default function V12ClientController() {
     // Referral attribution from inbound links.
     const params = new URLSearchParams(window.location.search);
     const referredBy = params.get("ref");
-    if (referredBy) sessionStorage.setItem("rac_referred_by", referredBy.slice(0, 80));
+    if (referredBy) safeSet("rac_referred_by", referredBy.slice(0, 80));
     const researchLeadId = params.get("rr");
-    if (researchLeadId && /^[0-9a-f-]{36}$/i.test(researchLeadId)) sessionStorage.setItem("rac_research_lead_id", researchLeadId);
+    if (researchLeadId && /^[0-9a-f-]{36}$/i.test(researchLeadId)) safeSet("rac_research_lead_id", researchLeadId);
 
     // Approved referral actions, without collecting third-party contact data.
     const copyBtn = document.querySelector<HTMLButtonElement>(".referral-primary");
@@ -122,7 +176,7 @@ export default function V12ClientController() {
 
       const applyRecommendation = () => {
         const labels = Array.from(selected);
-        sessionStorage.setItem("rac_focus_areas", JSON.stringify(labels));
+        safeSet("rac_focus_areas", JSON.stringify(labels));
 
         const recommendation = recommendFromChips(labels);
         chipResult.textContent = "";
@@ -138,7 +192,7 @@ export default function V12ClientController() {
             );
             if (box) box.checked = true;
           });
-          sessionStorage.setItem("rac_cta_origin", `chip recommendation: ${recommendation.primary}`);
+          safeSet("rac_cta_origin", `chip recommendation: ${recommendation.primary}`);
         });
         chipResult.appendChild(link);
       };
@@ -181,15 +235,27 @@ export default function V12ClientController() {
         const interests = Array.from(document.querySelectorAll<HTMLInputElement>("#assessment-interest input[type=checkbox]:checked"))
           .map((input) => input.closest("label")?.textContent?.trim().replace(/\s+/g, " ") || input.value)
           .filter(Boolean);
+        // Stored focus areas are only ever written by applyRecommendation above,
+        // but the value is user-reachable, so it is validated before it is sent:
+        // anything that is not an array of non-empty strings would fail Zod
+        // server-side and show the visitor a confusing error.
+        const storedFocusAreas = safeGetJSON<unknown>("rac_focus_areas", []);
+        const focusAreas = Array.isArray(storedFocusAreas)
+          ? storedFocusAreas
+              .filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0)
+              .map((entry) => entry.trim())
+              .slice(0, 10)
+          : [];
+
         const payload: LeadPayload = {
           fullName: nameInput.value.trim(),
           email: emailInput.value.trim(),
           interests,
-          focusAreas: JSON.parse(sessionStorage.getItem("rac_focus_areas") || "[]"),
-          ctaOrigin: sessionStorage.getItem("rac_cta_origin") || undefined,
-          referredBy: sessionStorage.getItem("rac_referred_by") || undefined,
+          focusAreas,
+          ctaOrigin: safeGet("rac_cta_origin") || undefined,
+          referredBy: safeGet("rac_referred_by") || undefined,
           sessionReferralCode: buildSessionReferralCode(),
-          researchReportLeadId: sessionStorage.getItem("rac_research_lead_id") || undefined,
+          researchReportLeadId: safeGet("rac_research_lead_id") || undefined,
         };
 
         const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
@@ -204,7 +270,7 @@ export default function V12ClientController() {
           });
           const result = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(result?.error || "Unable to submit right now.");
-          if (result.referralCode) sessionStorage.setItem("rac_referral_code", result.referralCode);
+          if (result.referralCode) safeSet("rac_referral_code", result.referralCode);
           status.dataset.state = "success";
           status.textContent = "Thank you. Your information has been received.";
           form.reset();
