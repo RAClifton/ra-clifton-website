@@ -1,12 +1,13 @@
-# Session Handoff — R.A. Clifton® Website
+# Session Handoff — R.A. Clifton™ Website
 
-**Last updated:** 15 September 2026, end of session 2
-**Status:** 🟢 **LIVE** at https://www.raclifton.com
+**Last updated:** 16 September 2026, end of session 3
+**Status:** 🟢 **LIVE** at https://www.raclifton.com — v14.2 shipped
 
 Operating detail and step-by-step procedures live in
 [OPERATIONS.md](OPERATIONS.md). Current checklist state lives in
-[../LAUNCH-CHECKLIST.md](../LAUNCH-CHECKLIST.md). A detailed account of how
-session 2 went is in [SESSION-2-TRANSCRIPT.md](SESSION-2-TRANSCRIPT.md).
+[../LAUNCH-CHECKLIST.md](../LAUNCH-CHECKLIST.md). Detailed accounts of each
+session: [SESSION-2-TRANSCRIPT.md](SESSION-2-TRANSCRIPT.md) (launch),
+[SESSION-3-TRANSCRIPT.md](SESSION-3-TRANSCRIPT.md) (v14.2).
 
 ---
 
@@ -14,10 +15,10 @@ session 2 went is in [SESSION-2-TRANSCRIPT.md](SESSION-2-TRANSCRIPT.md).
 
 | Thing | Value |
 |---|---|
-| **Live site** | https://www.raclifton.com (public since 15 Sep 2026) |
+| **Live site** | https://www.raclifton.com |
 | **Apex** | https://raclifton.com → 308 → www |
-| **Production tag** | `v14.1.2-live` |
-| **Latest commit** | `95a516e` |
+| **Latest commit** | `e8f6433` (merge of v14.2) |
+| **Production tags** | `v14.1.2-live`, `v14.2-live` |
 | **Vercel project** | `prj_jy6MvHCgCaSeTYqY9zRACtcL2eoC` |
 | **Vercel team** | `team_UKZCLZYnq61v3vUYRQsJMoBr` |
 | **Cloudflare zone** | `a6300e75ca596fef9695eb21fe9d8441` |
@@ -28,10 +29,12 @@ session 2 went is in [SESSION-2-TRANSCRIPT.md](SESSION-2-TRANSCRIPT.md).
 | **TLS cert expires** | 14 December 2026 (auto-renews) |
 | **Project root** | `~/Desktop/Claude Code Projects_temp d260629/ra-clifton-website/ra-clifton-website` |
 | **Research report live** | 15-page merged edition, 489,498 bytes |
-| **Local master** | `~/Desktop/RA_Clifton_AI_for_Small_Business_v3_MERGED.pdf` |
-| **Report HTML source** | session scratchpad — regenerate via headless Chrome |
+| **Report cover image** | `public/assets/report-cover.jpg` (560×726, 24 KB) |
+| **Link-preview card** | `public/assets/share-card.jpg` (1200×630, 55 KB) |
 | **Report review page** | https://claude.ai/artifact/3mFdeShK3sQMJtPji5GNJ8 |
+| **v14.2 QA checklist** | https://claude.ai/artifact/TaQSXfXPf26aLtS18nu54X |
 | **Brand mark** | **™** everywhere — not registered, so ® would be improper |
+| **Checks that must pass** | `npm test` · `npm run typecheck` · `npm run build` |
 
 Credentials: `.env.local` (app), `~/.raclifton-setup-tokens` (Cloudflare +
 Vercel), `~/.raclifton-db` (Neon). Never committed, never pasted into chat.
@@ -43,72 +46,95 @@ Vercel), `~/.raclifton-db` (Neon). Never committed, never pasted into chat.
 Paste this into a **new Claude Code session** started from the project root.
 
 ```text
-Resume work on the R.A. Clifton website (v14.1.2).
+Resume work on the R.A. Clifton website (v14.2, live).
 
 Read these first, in order:
   1. CLAUDE.md                     - locked scope and change discipline
-  2. docs/OPERATIONS.md            - operating manual, credentials map, SOPs 1-8
+  2. docs/OPERATIONS.md            - operating manual, credentials map, SOPs
   3. LAUNCH-CHECKLIST.md           - what is done vs outstanding
   4. docs/SESSION-HANDOFF.md       - this file
-  5. docs/SESSION-2-TRANSCRIPT.md  - how the launch session actually went
+  5. docs/SESSION-3-TRANSCRIPT.md  - how session 3 went, including what went
+                                     wrong with the hero. Read this before
+                                     touching the hero or header.
 
-STATE AS OF 15 SEP 2026 - THE SITE IS LIVE
-https://www.raclifton.com is public. Protection is
-ssoProtection.deploymentType = "all_except_custom_domains", so the custom
-domain serves everyone while raw *.vercel.app URLs stay behind Vercel login.
-Production baseline tagged v14.1.2-live. Latest commit 95a516e, tree clean.
+STATE AS OF 16 SEP 2026
+https://www.raclifton.com is public and serving v14.2. Latest commit e8f6433,
+tagged v14.2-live. Protection is ssoProtection.deploymentType =
+"all_except_custom_domains", so the custom domain serves everyone while raw
+*.vercel.app URLs stay behind Vercel login.
 
-VERIFIED WORKING
-  - both lead paths through a REAL browser (Chrome via DevTools Protocol):
-    the report modal stores rac_research_lead_id itself, the assessment form
-    reads it back, and the database join returned true. SOP 6 is closed.
-  - inbound mail to research@raclifton.com forwards to Gmail (header-verified,
-    SRS Return-Path and a cloudflare-email.net hop)
-  - report emails send and their links resolve to www.raclifton.com
-  - the 15-page research report serves at /research/ (489,498 bytes)
+WHAT v14.2 SHIPPED
+  - The five "Not sure where to start?" pills work. They select, and the same
+    five are mirrored inside the "Interested in Our Assessments?" box under
+    "What would you like to improve?" as ONE answer shown twice.
+  - Those answers land in website_leads.focus_areas beside the name, email and
+    requested assessments. Verified on production with a real row.
+  - The Share by Email referral body used to say "open this page" and contain
+    no page. It now carries a real tracked URL with the sharer's referral code,
+    and ships in the markup so it works with no JavaScript.
+  - The site publishes Open Graph metadata, so that link renders as a card with
+    the report cover in Mail, iMessage, Slack, WhatsApp and LinkedIn.
+  - The research report email was four bare <p> tags; it is now a designed
+    email with the brief's actual cover, a real button, a preheader, a reason
+    the recipient is receiving it, and an advice disclaimer.
+  - The report cover also sits in the lead-magnet modal, where the submit
+    arrow points at it. Clicking it focuses the first field.
+  - The desktop hero artwork has a header button and a hero button painted into
+    it with no links behind either. Both now have invisible hotspots and work.
+  - CRITICAL FIX: sessionStorage throws SecurityError in Safari with "Block All
+    Cookies" and in some in-app browsers. Every listener is registered inside
+    one mount effect, so the throw aborted it BEFORE the lead form's submit
+    listener registered. The form silently did nothing and the lead was lost.
+    Every storage access now goes through safeGet/safeSet/safeGetJSON.
 
-THE BRAND MARK IS NOW ™, NOT ®
-R.A. Clifton is not a registered mark, so ® was improper. All seven site
-occurrences were swapped to ™ (page title, OpenGraph description, header and
-footer lockups, and the report email in both plain text and HTML). Product
-marks - AI Readiness Score™ and the rest - were already correct and untouched.
-If the mark is ever registered, swap all seven back to ® in one pass.
+THE HERO AND HEADER ARE UNCHANGED - AND THAT WAS DELIBERATE
+Session 3 rebuilt the hero as live HTML to fix the fuzzy text, got it wrong
+four times, and reverted it in full. app/page.tsx and app/globals.css were
+restored to ce068f3 and verified byte-identical to the live site. Only 24
+additive CSS lines and one markup line sit on top.
 
-FIRST THING TO DO: PURGE TEST DATA
-The lead tables hold 7 test rows, all from alphaonerac@gmail.com:
-  research_report_leads : Tom Jones, R So, Ne Report, New Report2, Taz Ja
-  website_leads         : R Test, Tom J
-Confirm with Clifton that none are real, then delete them so the tables are
-clean for genuine leads. OPERATIONS.md SOP 2 has the queries.
+THE ROOT MISTAKE, so it is not repeated: the photograph used in the rebuild was
+generated fresh from a written prompt. It was never the artwork on the live
+site. Every round of adjustment refined a composition built on the wrong
+picture, and nobody in the loop could see the page to notice. If you cannot see
+the page, do not iterate on visual design - reproduce the existing thing by
+measuring the existing asset, or leave it alone.
 
-Note both assessment rows show research_report_lead_id = null. That is
-CORRECT, not a bug - neither came through the report modal. Attribution only
-populates when someone requests the report and then clicks through from the
-success screen in the same tab without reloading.
+LEAD TABLES ARE NOT EMPTY
+website_leads has 2 rows and research_report_leads has 3, all Clifton's own
+testing from the preview and the live site. PREVIEW DEPLOYMENTS WRITE TO THE
+PRODUCTION DATABASE - they share DATABASE_URL. Purge before real leads arrive;
+export first, outside the repo. OPERATIONS.md has the procedure.
 
 OPEN ITEMS
-  1. Three passages in the research report are Claude's copy, not Clifton's,
-     and have never been signed off. They are marked NEW COPY inline at
-     https://claude.ai/artifact/3mFdeShK3sQMJtPji5GNJ8 - section 2 "The
-     practical test" callout, the closing paragraph of section 3 on
-     deliberateness, and the section 4 "If you are not in professional
-     services" callout plus the paragraph after it. Cut any Clifton rejects
-     and republish.
-  2. Safari has still never been opened against the live site.
-  3. A deeper evidence pass is available. The pre-merge edition is in git at
-     37e78cc~1:public/research/... and still contains material not folded in:
-     Federal Reserve adoption growth, BCG leader/laggard multiples, METR's
-     finding that experienced developers were SLOWER with AI, hallucination
-     rate ranges, AI incident counts, wage premium data, and a
-     profession-specific 90-day plan.
-  4. Delete ~/.raclifton-setup-tokens and ~/.raclifton-db when Clifton says
-     so. Not automatic - the Vercel token is the only way to change deployment
+  1. THE ORIGINAL ASK IS STILL NOT DONE. The header and hero text is still
+     fuzzy, because it is still a 773x515 image stretched ~4x on high-DPI
+     screens. Clifton said he would address it separately. Fixing it means
+     rebuilding the hero as real text over the EXISTING artwork - not a new
+     photograph - and needs someone who can actually see the rendered page.
+  2. Also not done: the second hero CTA pointing at the research report. A
+     button that is not painted into the artwork cannot be added while the
+     hero is a flat image.
+  3. The redesigned report email has not been seen by a human. The three sends
+     in the database went out under the old plain version. Request the report
+     once on the live site to see the new one.
+  4. The share card has not been confirmed rendering. Paste www.raclifton.com
+     into Slack, iMessage or LinkedIn to check.
+  5. Footer "Resources", "About" and "Contact" link to "#" - they go nowhere.
+     "Privacy" and "Terms" are plain text, not links, on a site whose form
+     stores emails and IP addresses.
+  6. POST /api/leads has no rate limit, honeypot or CAPTCHA. The table is
+     floodable. Pre-existing.
+  7. Three passages in the research report are Claude's copy, not Clifton's,
+     and have never been signed off. Marked NEW COPY inline at
+     https://claude.ai/artifact/3mFdeShK3sQMJtPji5GNJ8
+  8. Safari VISUAL pass has still never been done. Form submission is proven
+     from Safari; nobody has LOOKED at the live site in it at the eight widths.
+  9. Delete ~/.raclifton-setup-tokens and ~/.raclifton-db when Clifton says so.
+     Not automatic - the Vercel token is the only way to change deployment
      protection from here and the Neon URL the only way to read leads.
-  5. Vercel token expires 14 Oct 2026. OPERATIONS.md SOP 4.
-  6. Recommended to Clifton, not yet acted on: register copyright in the
-     research report. Copyright, not trademark, is what protects the content,
-     and US law requires registration before you can sue. Registering within
-     three months of publication unlocks statutory damages and fees.
+ 10. Vercel token expires 14 Oct 2026. OPERATIONS.md SOP 4.
+ 11. Recommended, not yet acted on: register copyright in the research report.
 
 CONSTRAINTS
   - CLAUDE.md governs: smallest safe changes only. No redesign, no Tailwind,
@@ -118,107 +144,143 @@ CONSTRAINTS
   - Do NOT use the Vercel MCP tool to change deployment protection. Its enum
     omits "all_except_custom_domains" and the nearest option leaves the main
     alias publicly readable. Use the REST API - SOP 7.
-  - Two elements are intentionally inert: the header hamburger and the five
-    "Not sure where to start?" chips. Styling but no JavaScript. Not bugs.
-  - If you regenerate the research report PDF, keep the filename. Every
-    report email ever sent points at that exact path - SOP 8.
+  - The header hamburger is still intentionally inert. The pills are NOT any
+    more - that changed in v14.2.
+  - If you regenerate the research report PDF, keep the filename. Every report
+    email ever sent points at that exact path - SOP 8.
+  - Nothing reaches production without Clifton previewing and approving it.
 
 TRAPS - DO NOT RE-LEARN THESE
+  - The live site and the preview look identical. Two rounds were lost to
+    Clifton testing www.raclifton.com and reporting the new work as broken.
+    Send the branch alias and tell him to check the address bar says v142, in
+    a private window.
+  - A mailto: body is text/plain by specification. No HTML, no images, ever.
+    To style a referral email the SITE has to send it, which means collecting
+    a third party's address.
+  - .bars belongs to the R.A. Clifton logo's gold bar mark. A second .bars rule
+    later in globals.css restyles the logo itself in header and footer.
+  - .report-modal-form button paints EVERY button in that form gold. New
+    buttons there need extra specificity, and type="button" or they submit.
+  - Inter is declared in the body font stack and loaded nowhere. Text renders
+    in Inter on machines that have it and Arial elsewhere, so any layout that
+    depends on a few pixels of label width is unreliable by machine.
+  - next lint was removed in Next 16. The script is now npm run typecheck.
   - A gated Vercel site returns 200, because its login page is a real page.
     Check the page title or grep for vercel.com/login, never the status code.
-  - Testing email forwarding with a Bcc to yourself proves nothing. Gmail
-    deduplicates by Message-ID and you see the Bcc copy. Cloudflare also
-    refuses mail whose sender domain is the routed domain, so Resend can
-    never be the test sender. Personal skill: verify-email-routing.
-  - Georgia ships only old-style figures. Digits vary in height by design and
-    no font property fixes it. globals.css has a worked example.
-  - Date every Census figure. 30.6% (Nov 2025-Feb 2026 supplement) and 37%
-    (May 2026) are both correct; an undated figure looks wrong to a checker.
-  - next dev rewrites next-env.d.ts to .next/dev/types. Never commit that -
-    revert it and re-run npm run build first.
-  - LOOK AT THE RENDERED PAGE, not just the PDF. A CSS bug shipped through
-    seven artifact publishes because only the PDF was ever screenshotted.
-  - display:grid on an <li> makes EVERY child a grid item, so a leading <b>
-    takes column 2 and the following text wraps into column 1. Position such
-    markers absolutely instead.
-  - Chrome headless clamps --window-size to ~485px and a local artifact file
-    has no viewport meta (the publish wrapper adds it), so it falls back to
-    980px. Neither tests phone layout. Use CDP
-    Emulation.setDeviceMetricsOverride against a copy with the meta injected.
+  - Testing email forwarding with a Bcc to yourself proves nothing. Personal
+    skill: verify-email-routing.
+  - Georgia ships only old-style figures. Digits vary in height by design.
+  - Date every Census figure. 30.6% (Nov 2025-Feb 2026) and 37% (May 2026) are
+    both correct; an undated figure looks wrong to a checker.
+  - next dev rewrites next-env.d.ts. Never commit that - revert it and re-run
+    npm run build first.
+  - LOOK AT THE RENDERED PAGE, not just the PDF.
+  - display:grid on an <li> makes EVERY child a grid item.
+  - Chrome headless clamps --window-size to ~485px. Use CDP
+    Emulation.setDeviceMetricsOverride.
 
-Start by confirming current state rather than trusting this summary: check
-git status, that npm run build passes, that the site is publicly reachable
-while *.vercel.app URLs are still gated, and what is actually in the lead
-tables.
+Start by confirming current state rather than trusting this summary: check git
+status, that npm test / npm run typecheck / npm run build all pass, that the
+site is publicly reachable while *.vercel.app URLs are still gated, and what is
+actually in the lead tables.
 ```
 
 ---
 
-## What happened in session 2
+## What happened in session 3
 
 | # | Step | Result |
 |---|---|---|
-| 1 | Confirmed real state vs the day-1 summary | Site still gated, tree clean |
-| 2 | Proved inbound email forwarding works | Took 4 attempts — see below |
-| 3 | Browser QA at 8 widths, Chrome | Passed; 2 defects found |
-| 4 | Fixed tablet hero overlap and the "5 HOURS" numeral | Commit `9e25f8e` |
-| 5 | Reviewed the research report | 14 issues raised |
-| 6 | Rebuilt the report as a 14-page PDF + web review page | Overflow check caught a real clipping bug |
-| 7 | Verified every load-bearing figure against its source | One restored, one corrected |
-| 8 | Made the site public, tested both paths, tagged baseline | Commit `7885e4b`, tag `v14.1.2-live` |
+| 1 | Investigated the three reported items | Found the hero is a flat image at desktop and phone, which explained the fuzziness and made the CTA change impossible as asked |
+| 2 | Found three unreported defects | Desktop hero and header buttons had no links; the site header existed only as pixels; the referral email contained no URL |
+| 3 | Wrote a spec and an eight-task plan | Approved by Clifton |
+| 4 | Built it with per-task review | A reviewer found a bug in the plan; another caught a `.bars` collision before it shipped |
+| 5 | Final whole-branch review | Found a Critical no task-scoped review could see: a `sessionStorage` throw killed the form and lost leads silently |
+| 6 | Clifton's QA pass | 6 of 8 passed; both failures were the hero |
+| 7 | Four rounds on the hero | All wrong. Root cause: the photograph was never the one on the live site |
+| 8 | Reverted the hero and header in full | Verified byte-identical to production |
+| 9 | Rebuilt the referral email to need no JavaScript | Removed a whole class of failure |
+| 10 | Redesigned the pills as Clifton specified | Mirrored into the signup box, recommender removed |
+| 11 | Redesigned the report email, added the share card and modal cover | |
+| 12 | Merged and verified on production | 16 checks, all assets `200`, a real lead POSTed and confirmed in Neon |
 
 ---
 
-## Decisions worth not relitigating
+## SOP 9 — Ship a change safely
 
-**The stacked tablet dashboard reuses an existing approved rule.** The CSS to
-stack the dashboard below the portrait already existed but was scoped to
-`max-width:767px`, where it never ran. Widening it to `1023px` was the minimal
-fix; no new layout was invented.
+The process that worked, after the process that did not.
 
-**The "5 HOURS" fix is a transform, not a font property, and cannot be
-otherwise.** Georgia ships only old-style figures and exposes no `lnum`
-OpenType feature. `font-variant-numeric` is a no-op in this typeface. The
-`.178em` nudge is exactly one descender depth, measured from the font file.
-There is a comment in `globals.css` saying so — do not "simplify" it.
+1. `cd ~/Desktop/"Claude Code Projects_temp d260629"/ra-clifton-website/ra-clifton-website`
+2. `git checkout main && git pull`
+3. `git checkout -b <short-branch-name>` — **never work on `main`**
+4. Make the change. Keep it additive where possible; `git diff ce068f3 -- app`
+   is a good sanity check on how far it has drifted from the approved design
+5. Run all three checks. All must pass:
+   ```
+   npm test
+   npm run typecheck
+   npm run build
+   ```
+6. `git add <specific files>` — **never `git add -A`**. `LAUNCH-CHECKLIST.md`,
+   `docs/OPERATIONS.md`, `docs/SESSION-HANDOFF.md` and `next-env.d.ts` carry
+   unrelated edits that should not be swept in
+7. Commit, then `git push -u origin <branch-name>`
+8. Vercel builds a preview automatically. Its URL is
+   `ra-clifton-website-git-<branch-with-dots-as-dashes>-raclifton.vercel.app`
+9. **Send Clifton that URL and tell him to open it in a private window and
+   check the address bar.** He has twice tested the live site by mistake and
+   reported new work as broken
+10. Only after he approves: `git checkout main && git merge --no-ff <branch>`
+    then `git push origin main`
+11. Wait for production to actually serve it:
+    ```
+    until curl -s https://www.raclifton.com | grep -q '<something new>'; do sleep 5; done
+    ```
+12. Verify on the live site, not the preview. Tag it: `git tag v14.x-live && git push origin v14.x-live`
 
-**The `5` in `58%` deliberately keeps Georgia's stagger.** Fixing it would
-require changing the typeface for digits. Clifton chose surgical over
-consistent.
+## SOP 10 — Read the leads
 
-**Desktop ≥1280px was deliberately left untouched** during the tablet fix.
+1. From the project root, with `.env.local` present:
+   ```
+   node -e '
+   const fs=require("fs");
+   const {neon}=require("@neondatabase/serverless");
+   const url=fs.readFileSync(".env.local","utf8").match(/^DATABASE_URL=(.*)$/m)[1].trim().replace(/^["\x27]|["\x27]$/g,"");
+   neon(url)("SELECT created_at, full_name, email, interests, focus_areas, cta_origin, referred_by FROM website_leads ORDER BY created_at DESC")
+     .then(r=>r.forEach(x=>console.log(JSON.stringify(x,null,2))));
+   '
+   ```
+2. `interests` = the assessment checkboxes they ticked
+3. `focus_areas` = the improvement pills they selected — **new in v14.2**
+4. `cta_origin` = which button they clicked before converting
+5. `referred_by` = the referral code of whoever shared the link with them
+6. For report leads, use `research_report_leads` and check `email_sent`
 
-**The report PDF uses Baskerville, not Georgia.** Georgia and Charter both
-use old-style figures — the same problem just fixed on the site. In a
-numbers-heavy report that would have been a poor choice.
+## SOP 11 — Purge test rows before real leads arrive
 
-**Nothing was published without a verified source.** Where a figure could not
-be confirmed it was flagged, never filled in with a plausible-looking citation.
+1. Export first, **outside the repo** so lead data can never be committed:
+   ```
+   node -e '...' > ~/Desktop/raclifton-test-leads-purged-<date>.csv
+   ```
+2. Delete by email address, never by a date range — real leads may be interleaved
+3. Confirm the counts afterwards
+4. Remember preview deployments write here too, so this needs doing again after
+   any round of preview testing
 
----
+## SOP 12 — Regenerate the report cover and the share card
 
-## Traps that cost time — don't re-learn these
+Needed if the research report PDF is ever replaced.
 
-| Looked like | Actually was |
-|---|---|
-| Inbound email test succeeded | It was the **Bcc copy**, delivered Gmail-to-Gmail. The real forwarded copy was deduplicated by `Message-ID`. Check `Return-Path` for an SRS rewrite and look for a `cloudflare-email.net` hop. |
-| Cloudflare was rejecting Claude's test mail | Cloudflare refuses mail whose **sender domain is the routed domain** (loop prevention). Resend can only send from `raclifton.com`, so it can never be the test sender. |
-| A report email had a truncated UUID | Quoted-printable encoding. `rr=3D3ddc0e5a…` decodes to `rr=3ddc0e5a…`. Gmail's text extractor mis-decoded it; the raw bytes were fine. |
-| The "5" was a CSS alignment bug | Georgia's **old-style figures**. The `5` glyph spans −365..1073 against a cap height of 1419. Not fixable with a font property. |
-| The page looked fine in the PDF | Page 7 was **clipping an entire paragraph**. Fixed-height pages hide overflow silently — measure it, don't eyeball it. |
-| A data point looked fabricated | The 2024 "40%" was **real** — it was missing from the prose, not invented. Verify before deleting. |
-| `next-env.d.ts` showed as modified | `next dev` rewrites it to `.next/dev/types/`. Never commit that — revert it and re-run `npm run build` before committing. |
-
-Also still true from day 1: `curl -L` follows redirects to Vercel's login page,
-which returns **200**. Check the landing page content, not the status code.
-
----
-
-## Current state
-
-- Site public, HTTPS, apex redirecting, deployment URLs still gated
-- Both lead tables at 0 rows, ready for real leads
-- Inbound and outbound email both proven end-to-end
-- Production baseline tagged, working tree clean, in sync with GitHub
-- Revised research report exists as a PDF and a web page, **not yet published
-  to the site**
+1. Render page one of the PDF:
+   ```
+   qlmanage -t -s 1400 -o <outdir> public/research/<report>.pdf
+   ```
+2. Trim and resize it to the email cover:
+   ```
+   node -e "require('sharp')('<the png>').trim({threshold:10}).resize({width:560}).jpeg({quality:86,mozjpeg:true}).toFile('public/assets/report-cover.jpg')"
+   ```
+3. Rebuild the 1200×630 link-preview card the same way it was built in session
+   3 — an SVG for the text and brand, with the cover composited on the right.
+   The script is in the session 3 history; `sharp` is already a dependency
+4. Check both are under ~60 KB, then `npm run build` and preview
