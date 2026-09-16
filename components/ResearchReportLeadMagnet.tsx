@@ -3,6 +3,19 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 
 const REPORT_PATH = "/research/ai-for-a-small-business-the-case-for-starting-now.pdf";
 
+/**
+ * sessionStorage throws SecurityError in Safari with "Block All Cookies" and in
+ * some in-app browsers. Attribution memory is a convenience; the report handoff
+ * is the conversion. Never let a storage failure surface as an error here.
+ */
+function safeSet(key: string, value: string): void {
+  try {
+    window.sessionStorage.setItem(key, value);
+  } catch {
+    // Best effort only.
+  }
+}
+
 export default function ResearchReportLeadMagnet() {
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState(false);
@@ -10,6 +23,7 @@ export default function ResearchReportLeadMagnet() {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const dialog = useRef<HTMLDivElement>(null);
+  const nameField = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const trigger = document.querySelector<HTMLButtonElement>(".research-report-trigger");
@@ -37,7 +51,7 @@ export default function ResearchReportLeadMagnet() {
       const r = await fetch("/api/research-report", { method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify({ fullName:fd.get("fullName"), email:fd.get("email"), ctaOrigin:"why_ai_research_section" }) });
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(data.error || "Unable to prepare the report right now.");
-      sessionStorage.setItem("rac_research_lead_id", data.leadId);
+      if (data.leadId) safeSet("rac_research_lead_id", data.leadId);
       setReportUrl(data.reportUrl || REPORT_PATH);
       setDone(true);
       setStatus(data.emailSent ? "A copy has also been sent to your email." : "Your report is ready now.");
@@ -54,9 +68,30 @@ export default function ResearchReportLeadMagnet() {
         <h2 id="report-title">AI for a Small Business:<br/><span>The Case for Starting Now.</span></h2>
         <p className="report-modal-deck">A decision brief for business owners who want a practical, measured way to evaluate AI—without hype or a wholesale transformation.</p>
         <form className="report-modal-form" onSubmit={submit}>
-          <label>Full Name<input name="fullName" type="text" autoComplete="name" required minLength={2}/></label>
+          <label>Full Name<input ref={nameField} name="fullName" type="text" autoComplete="name" required minLength={2}/></label>
           <label>Email Address<input name="email" type="email" autoComplete="email" required/></label>
-          <button type="submit" disabled={busy}>{busy ? "Preparing…" : "Get the Research Report →"}</button>
+          <div className="report-modal-submit">
+            <button type="submit" disabled={busy}>{busy ? "Preparing…" : "Get the Research Report →"}</button>
+            {/* The arrow on the button points straight at this. Clicking it puts
+                the cursor in the first field, so someone drawn to the cover
+                lands where they can actually act. */}
+            <button
+              type="button"
+              className="report-cover-peek"
+              onClick={() => {
+                nameField.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                nameField.current?.focus();
+              }}
+              aria-label="Enter your name and email to get this report"
+            >
+              <img
+                src="/assets/report-cover.jpg"
+                alt="Cover of the decision brief: AI for a Small Business, The Case for Starting Now"
+                width={560}
+                height={726}
+              />
+            </button>
+          </div>
           <small>Immediate access after submission. We’ll also email you a copy.</small>
           <div className="report-modal-status" aria-live="polite">{status}</div>
         </form>
@@ -68,7 +103,7 @@ export default function ResearchReportLeadMagnet() {
           <a className="report-primary" href={reportUrl} target="_blank" rel="noreferrer">Read Report →</a>
           <a className="report-secondary" href={reportUrl} download>Download PDF</a>
         </div>
-        <a className="report-readiness-link" href="#assessment-interest" onClick={()=>{ sessionStorage.setItem("rac_cta_origin","research_report_success"); setOpen(false); }}>Discover Your AI Readiness Score™ →</a>
+        <a className="report-readiness-link" href="#assessment-interest" onClick={()=>{ safeSet("rac_cta_origin","research_report_success"); setOpen(false); }}>Discover Your AI Readiness Score™ →</a>
         <div className="report-modal-status" aria-live="polite">{status}</div>
       </div>}
     </div>
