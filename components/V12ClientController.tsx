@@ -28,7 +28,7 @@ export default function V12ClientController() {
     const cleanups: Array<() => void> = [];
 
     // Preserve approved smooth-scroll destinations while recording CTA origin.
-    document.querySelectorAll<HTMLAnchorElement>('a[href="#assessment-interest"]').forEach((a) => {
+    document.querySelectorAll<HTMLAnchorElement>('a[href="#assessment-interest"], a[href="#why-ai-now"]').forEach((a) => {
       const onClick = () => {
         const origin = (a.textContent || a.getAttribute("aria-label") || "assessment-cta").trim().replace(/\s+/g, " ");
         sessionStorage.setItem("rac_cta_origin", origin.slice(0, 160));
@@ -69,6 +69,34 @@ export default function V12ClientController() {
       };
       copyBtn.addEventListener("click", onCopy);
       cleanups.push(() => copyBtn.removeEventListener("click", onCopy));
+    }
+
+    // Share by Email must carry the same referral URL the copy button produces.
+    // The markup ships an empty mailto: because the body needs the live code.
+    const shareBtn = document.querySelector<HTMLAnchorElement>(".referral-secondary");
+    if (shareBtn) {
+      const onShare = () => {
+        const code = buildSessionReferralCode();
+        const url = new URL(window.location.href);
+        url.hash = "assessment-interest";
+        url.searchParams.set("ref", code);
+        const subject = "Complimentary AI Readiness Score";
+        const body = [
+          "I thought you might find this useful. R.A. Clifton is offering complimentary pre-launch access to its AI Readiness Score.",
+          "",
+          `Get started here: ${url.toString()}`,
+        ].join("\n");
+        shareBtn.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      };
+      shareBtn.addEventListener("mousedown", onShare);
+      shareBtn.addEventListener("touchstart", onShare, { passive: true });
+      shareBtn.addEventListener("focus", onShare);
+      onShare();
+      cleanups.push(() => {
+        shareBtn.removeEventListener("mousedown", onShare);
+        shareBtn.removeEventListener("touchstart", onShare);
+        shareBtn.removeEventListener("focus", onShare);
+      });
     }
 
     // Keep the approved mobile sticky behavior.
