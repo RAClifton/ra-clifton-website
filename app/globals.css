@@ -9,7 +9,17 @@ a{text-decoration:none;color:inherit} button,input,select{font:inherit} .contain
 header{position:absolute;inset:0 0 auto;z-index:20;height:68px;color:#fff} .header-in{height:100%;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:10px} .bars{display:flex;gap:2px;align-items:end;height:28px} .bars i{display:block;width:3px;background:var(--gold)} .bars i:nth-child(1){height:9px} .bars i:nth-child(2){height:15px} .bars i:nth-child(3){height:22px} .bars i:nth-child(4){height:28px}
 .brand strong{font-family:Georgia,serif;font-size:18px;display:block} .brand small{font-size:6px;letter-spacing:.1em;display:block;margin-top:4px;opacity:.8}
-.menu{width:44px;height:44px;border:0;background:transparent;color:#fff;font-size:26px}
+/* v14.2 — real header navigation, replacing the nav painted into the hero image */
+.header-nav{display:none;gap:28px;margin-left:auto;margin-right:28px}
+.header-nav a{font-size:13.5px;font-weight:600;color:rgba(255,255,255,.86);letter-spacing:.01em;min-height:44px;display:flex;align-items:center}
+.header-nav a:hover,.header-nav a:focus-visible{color:var(--gold)}
+.header-cta{display:none;align-items:center;gap:8px;min-height:42px;padding:0 18px;border-radius:7px;background:linear-gradient(90deg,var(--gold2),var(--gold));color:#17130b;font-weight:850;font-size:13px;white-space:nowrap}
+@media(min-width:768px){
+  .header-cta{display:inline-flex}
+}
+@media(min-width:1024px){
+  .header-nav{display:flex}
+}
 .hero{background:linear-gradient(180deg,#07131b,#091821);color:white;overflow:hidden} .hero-grid{padding-top:108px;padding-bottom:72px;display:grid;gap:32px}
 .eyebrow{margin:0 0 14px;color:var(--gold);font-size:11px;letter-spacing:.115em;font-weight:800} .orange{color:#db7c2b}
 h1,h2,h3{font-family:Georgia,serif} .hero h1{margin:0;font-size:42px;line-height:1.015;letter-spacing:-.035em;max-width:350px} .hero h1 span{display:block;color:var(--gold);margin-top:5px}
@@ -42,7 +52,6 @@ footer{padding:48px 0 36px;background:#051119;color:white} .foot{display:grid;ga
 .desktop-hero-reference{display:none;background:#07131b}
 .desktop-hero-reference img{display:block;width:100%;height:auto}
 @media(min-width:1024px){
-  header{display:none}
   .desktop-hero-reference{display:block}
   .hero{display:none}
 }
@@ -767,12 +776,6 @@ footer{padding:48px 0 36px;background:#051119;color:white} .foot{display:grid;ga
 
 @media(min-width:768px){
   .approved-mobile-hero{display:none}
-}
-
-
-/* === MOBILE HEADER DUPLICATION FIX === */
-@media(max-width:767px){
-  header{display:none !important}
 }
 
 
