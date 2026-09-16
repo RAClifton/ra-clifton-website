@@ -25,7 +25,7 @@ header{position:absolute;inset:0 0 auto;z-index:20;height:68px;color:#fff} .head
    desktops. The photograph is now a clean background plate; every word,
    including the metrics panel, is real HTML and stays sharp and editable. */
 .hero{position:relative;background:#07131b;color:white;overflow:hidden;isolation:isolate}
-.hero-bg{position:absolute;inset:0;z-index:0;background-image:url("/assets/hero-executive.webp");background-size:cover;background-position:58% center;background-repeat:no-repeat}
+.hero-bg{position:absolute;inset:0;z-index:0;background-image:url("/assets/hero-executive.webp");background-size:cover;background-position:center 44%;background-repeat:no-repeat}
 .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,14,20,.92) 0%,rgba(4,14,20,.80) 26%,rgba(4,14,20,.72) 60%,rgba(4,14,20,.94) 100%)}
 .hero-grid{position:relative;z-index:1;padding-top:108px;padding-bottom:72px;display:grid;gap:32px}
 .eyebrow{margin:0 0 14px;color:var(--gold);font-size:11px;letter-spacing:.115em;font-weight:800} .orange{color:#db7c2b}
@@ -51,22 +51,32 @@ h1,h2,h3{font-family:Georgia,serif} .hero h1{margin:0;font-size:42px;line-height
 .hero-visual{position:relative;width:100%;max-width:420px}
 /* v14.2b - the metrics panel reads as light projected on his eyeline, not a
    UI card sitting on the photo. Translucent, cyan-lit, faint scanlines. */
-.dash{position:relative;width:100%;padding:14px 15px;border:1px solid rgba(32,199,223,.42);border-radius:10px;background:linear-gradient(158deg,rgba(16,64,79,.34),rgba(6,26,34,.20));backdrop-filter:blur(7px);box-shadow:0 0 22px rgba(32,199,223,.18),0 0 0 1px rgba(32,199,223,.09),0 18px 48px rgba(0,0,0,.44);color:#dff6fb;overflow:hidden}
+.dash{position:relative;width:100%;padding:16px 17px;border:1px solid rgba(32,199,223,.42);border-radius:10px;background:linear-gradient(158deg,rgba(16,64,79,.34),rgba(6,26,34,.20));backdrop-filter:blur(7px);box-shadow:0 0 22px rgba(32,199,223,.18),0 0 0 1px rgba(32,199,223,.09),0 18px 48px rgba(0,0,0,.44);color:#dff6fb;overflow:hidden}
 .dash::before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:repeating-linear-gradient(180deg,rgba(32,199,223,.075) 0 1px,transparent 1px 4px)}
 .dash>*{position:relative}
-.dash small{display:block;font-size:9px;font-weight:800;letter-spacing:.07em;color:rgba(160,231,244,.88);text-shadow:0 0 10px rgba(32,199,223,.45)}
+.dash small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.07em;color:rgba(160,231,244,.88);text-shadow:0 0 10px rgba(32,199,223,.45)}
 /* Marks the hero figures as an example, not client results. Quiet by design. */
 .dash small.dash-note{margin-top:11px;font-weight:600;letter-spacing:.05em;color:rgba(150,208,222,.62);text-shadow:none}
 .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
 .metric{padding:8px 7px;background:rgba(32,199,223,.07);border:1px solid rgba(32,199,223,.15);border-radius:6px}
-.metric span{display:block;font-size:7px;color:rgba(162,224,237,.82);text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
-.metric strong{display:block;font-size:15px;margin-top:3px;color:#eafdff;text-shadow:0 0 12px rgba(32,199,223,.55)}
+.metric span{display:block;font-size:7.5px;color:rgba(162,224,237,.82);text-transform:uppercase;letter-spacing:.05em;line-height:1.3}
+.metric strong{display:block;font-size:19px;margin-top:3px;color:#eafdff;text-shadow:0 0 12px rgba(32,199,223,.55)}
 .metric em{display:block;color:#2ad8bd;font-size:9px;font-style:normal;margin-top:2px}
-.spark{height:42px;margin-top:9px;border-radius:6px;background:linear-gradient(135deg,transparent 25%,rgba(32,199,223,.14));position:relative}
-.spark:after{content:"";position:absolute;left:9px;right:9px;top:23px;box-shadow:0 0 8px rgba(32,199,223,.8);height:2px;background:linear-gradient(90deg,#20c7df 0 15%,transparent 15% 18%,#20c7df 18% 34%,transparent 34% 37%,#20c7df 37% 52%,transparent 52% 55%,#20c7df 55% 72%,transparent 72% 75%,#20c7df 75% 100%);transform:skewY(-7deg)}
-.dash-score{display:flex;align-items:center;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(32,199,223,.18)}
-.score-dial{flex:0 0 44px;width:44px;height:44px;box-shadow:0 0 14px rgba(32,199,223,.35);border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--cyan) 0 87%,rgba(255,255,255,.12) 87% 100%)}
-.score-dial strong{width:33px;height:33px;border-radius:50%;background:rgba(5,22,29,.92);display:grid;place-items:center;font-size:14px;color:#eafdff}
+.spark{height:50px;margin-top:6px;border-radius:6px;background:linear-gradient(135deg,transparent 25%,rgba(32,199,223,.14));position:relative}
+.spark:after{content:"";position:absolute;left:8px;right:8px;top:27px;box-shadow:0 0 8px rgba(32,199,223,.8);height:2px;background:linear-gradient(90deg,#20c7df 0 15%,transparent 15% 18%,#20c7df 18% 34%,transparent 34% 37%,#20c7df 37% 52%,transparent 52% 55%,#20c7df 55% 72%,transparent 72% 75%,#20c7df 75% 100%);transform:skewY(-7deg)}
+/* Bar sparks inside each metric, matching the approved comp. */
+.metric-bars{display:flex;align-items:flex-end;gap:2px;height:17px;margin-top:6px}
+.metric-bars i{display:block;flex:1;width:auto;border-radius:1px;background:linear-gradient(180deg,rgba(32,199,223,.95),rgba(32,199,223,.32));box-shadow:0 0 5px rgba(32,199,223,.45)}
+.metric-bars i:nth-child(1){height:30%}.metric-bars i:nth-child(2){height:45%}.metric-bars i:nth-child(3){height:36%}
+.metric-bars i:nth-child(4){height:60%}.metric-bars i:nth-child(5){height:73%}.metric-bars i:nth-child(6){height:87%}
+.metric-bars i:nth-child(7){height:100%}
+.dash-lower{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(32,199,223,.18)}
+.outlook>span{display:block;font-size:7.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:rgba(162,224,237,.84)}
+.months{display:flex;justify-content:space-between;margin-top:5px;font-size:7px;letter-spacing:.03em;color:rgba(150,208,222,.62)}
+.months i{font-style:normal}
+.dash-score{display:flex;align-items:center;gap:10px}
+.score-dial{flex:0 0 52px;width:52px;height:52px;box-shadow:0 0 14px rgba(32,199,223,.35);border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--cyan) 0 87%,rgba(255,255,255,.12) 87% 100%)}
+.score-dial strong{width:39px;height:39px;border-radius:50%;background:rgba(5,22,29,.92);display:grid;place-items:center;font-size:16px;color:#eafdff}
 .score-note{display:grid;gap:1px;font-size:9px;color:rgba(168,222,235,.78)}
 .pre{background:linear-gradient(90deg,#f4d888,#fff2cf);padding:22px 0} .pre strong{font-size:11px;letter-spacing:.105em} .pre p{margin:12px 0 0;font-size:13px;line-height:1.5;color:#574a35}
 section.light{padding:72px 0 80px} .intro h2,.five-intro h2,.brief h2,.lead h2{font-size:36px;line-height:1.08;letter-spacing:-.03em;margin:0} .intro>p:last-child,.five-intro>p:last-child,.brief>p,.lead>p{color:var(--muted);line-height:1.6;font-size:15px}
@@ -88,8 +98,8 @@ section.light{padding:72px 0 80px} .intro h2,.five-intro h2,.brief h2,.lead h2{f
 footer{padding:48px 0 36px;background:#051119;color:white} .foot{display:grid;gap:28px} .footnav{display:grid} .footnav a{min-height:44px;display:flex;align-items:center;color:rgba(255,255,255,.8)} .legal{font-size:11.5px;color:rgba(255,255,255,.58)}
 .sticky{position:fixed;z-index:30;left:10px;right:10px;bottom:10px;min-height:64px;background:rgba(5,18,25,.96);border:1px solid rgba(239,189,85,.3);border-radius:10px;color:white;padding:9px 10px 9px 14px;display:none;align-items:center;justify-content:space-between;box-shadow:0 14px 40px rgba(0,0,0,.26)} .sticky a{background:var(--gold);color:#1c170e;padding:13px;border-radius:7px;font-weight:850;font-size:11.5px}
 @media(min-width:768px){.container{padding-inline:32px}.hero h1{font-size:58px;max-width:650px}.trust{grid-template-columns:repeat(3,max-content);gap:20px}.hero-features{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.hero-actions{gap:14px}.hero-visual{max-width:420px}.dash{transform:perspective(1000px) rotateY(-4deg) rotateX(2deg)}.brief-grid{grid-template-columns:1fr 1fr;align-items:center}.lead-grid{grid-template-columns:.8fr 1.2fr}}
-@media(min-width:1024px){.container{padding-inline:48px}.hero-grid{grid-template-columns:minmax(0,.40fr) minmax(0,.60fr);align-items:start;padding-top:124px;padding-bottom:104px;gap:40px}.hero-bg::after{background:linear-gradient(90deg,rgba(4,14,20,.95) 0%,rgba(4,14,20,.88) 30%,rgba(4,14,20,.55) 62%,rgba(4,14,20,.42) 100%),linear-gradient(180deg,rgba(4,14,20,.55) 0%,transparent 30%,transparent 72%,rgba(4,14,20,.72) 100%)}.hero h1{font-size:42px;max-width:none}.hero-copy>p:last-of-type{font-size:14.5px;max-width:none;margin-top:18px}.hero-features{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 16px;max-width:none;margin-top:24px}.trust{grid-template-columns:1fr;gap:8px;margin-top:22px}.hero-actions{max-width:none;margin-top:24px}.hero-visual{max-width:300px;justify-self:end;align-self:start}.dash{transform:perspective(900px) rotateY(-9deg) rotateX(3deg)}.cards{display:grid;grid-template-columns:repeat(2,1fr);overflow:visible;margin:36px 0 0;padding:0}.five>.container{display:grid;grid-template-columns:.8fr 1.2fr;gap:54px}.five-grid{margin-top:0}.sticky{display:none!important}}
-@media(min-width:1280px){.container{padding-inline:40px}.hero h1{font-size:46px}.hero-visual{max-width:320px}.cards{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1024px){.container{padding-inline:48px}.hero-grid{grid-template-columns:minmax(0,.42fr) minmax(0,.58fr);align-items:start;padding-top:120px;padding-bottom:96px;gap:36px}.hero-bg::after{background:linear-gradient(90deg,rgba(4,14,20,.95) 0%,rgba(4,14,20,.88) 30%,rgba(4,14,20,.55) 62%,rgba(4,14,20,.42) 100%),linear-gradient(180deg,rgba(4,14,20,.55) 0%,transparent 30%,transparent 72%,rgba(4,14,20,.72) 100%)}.hero{min-height:clamp(700px,61vw,1000px)}.hero h1{font-size:42px;max-width:none}.hero-copy>p:last-of-type{font-size:14.5px;max-width:none;margin-top:18px}.hero-features{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:none;margin-top:26px}.trust{grid-template-columns:repeat(3,max-content);gap:18px;margin-top:24px}.hero-actions{max-width:none;margin-top:26px}.hero-visual{max-width:500px;justify-self:end;align-self:start}.dash{transform:perspective(1400px) rotateY(-6deg) rotateX(2deg)}.cards{display:grid;grid-template-columns:repeat(2,1fr);overflow:visible;margin:36px 0 0;padding:0}.five>.container{display:grid;grid-template-columns:.8fr 1.2fr;gap:54px}.five-grid{margin-top:0}.sticky{display:none!important}}
+@media(min-width:1280px){.container{padding-inline:40px}.hero h1{font-size:46px}.hero-visual{max-width:540px}.cards{grid-template-columns:repeat(4,1fr)}}
 /* From 768px up only the research CTA renders in the hero - the header carries
    the score CTA - so it runs the full width of the copy column at every size.
    That also retires the 1280px wrap problem: there is no second button to sit
