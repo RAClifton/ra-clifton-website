@@ -2,14 +2,39 @@ import type { Metadata } from "next";
 import V12ClientController from "@/components/V12ClientController";
 import ResearchReportLeadMagnet from "@/components/ResearchReportLeadMagnet";
 
+/**
+ * Absolute base for link-preview URLs. A preview deployment points at itself so
+ * its own card resolves; production uses the real domain.
+ */
+const SITE_URL =
+  process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production" && process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://www.raclifton.com";
+
+const SHARE_TITLE = "Discover Your AI Readiness Score™ — R.A. Clifton™";
+const SHARE_DESCRIPTION =
+  "See where your business actually stands with AI, and what is worth doing first. Complimentary during pre-launch, and about five minutes.";
+const SHARE_IMAGE_ALT =
+  "R.A. Clifton™ — Discover Your AI Readiness Score, complimentary during pre-launch, shown beside the cover of the decision brief “AI for a Small Business: The Case for Starting Now”.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "R.A. Clifton™ — AI-First CPA & Business Advisory",
   description: "R.A. Clifton helps ambitious small and mid-sized businesses turn financial and operational information into practical intelligence.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "See Your Business More Clearly. Make Smarter Decisions.",
-    description: "Discover your AI readiness and explore R.A. Clifton™ business assessments.",
-    type: "website"
+    title: SHARE_TITLE,
+    description: SHARE_DESCRIPTION,
+    type: "website",
+    url: "/",
+    siteName: "R.A. Clifton™",
+    images: [{ url: "/assets/share-card.jpg", width: 1200, height: 630, alt: SHARE_IMAGE_ALT }]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SHARE_TITLE,
+    description: SHARE_DESCRIPTION,
+    images: ["/assets/share-card.jpg"]
   }
 };
 
