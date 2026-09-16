@@ -125,8 +125,9 @@ export default function V12ClientController() {
       cleanups.push(() => copyBtn.removeEventListener("click", onCopy));
     }
 
-    // Share by Email must carry the same referral URL the copy button produces.
-    // The markup ships an empty mailto: because the body needs the live code.
+    // The full email now ships in the markup, so Share by Email works with no
+    // JavaScript at all. This only UPGRADES it: same copy, but the link gains
+    // this visitor's referral code so the referral can be attributed.
     const shareBtn = document.querySelector<HTMLAnchorElement>(".referral-secondary");
     if (shareBtn) {
       const onShare = () => {
