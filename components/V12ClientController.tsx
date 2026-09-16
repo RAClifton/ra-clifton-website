@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { recommendFromChips, type AssessmentKey } from "@/lib/chip-recommendations";
 
 type LeadPayload = {
   fullName: string;
   email: string;
   interests: string[];
+  focusAreas: string[];
   ctaOrigin?: string;
   referredBy?: string;
   sessionReferralCode?: string;
@@ -84,6 +86,54 @@ export default function V12ClientController() {
       });
     }
 
+    // "Not sure where to start?" — chips record intent and recommend one next step.
+    const chipButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".chips button"));
+    const chipResult = document.getElementById("chip-result");
+    if (chipButtons.length && chipResult) {
+      const selected = new Set<string>();
+
+      const applyRecommendation = () => {
+        const labels = Array.from(selected);
+        sessionStorage.setItem("rac_focus_areas", JSON.stringify(labels));
+
+        const recommendation = recommendFromChips(labels);
+        chipResult.textContent = "";
+        if (!recommendation) return;
+
+        const link = document.createElement("a");
+        link.href = "#assessment-interest";
+        link.textContent = recommendation.message;
+        link.addEventListener("click", () => {
+          recommendation.checkboxValues.forEach((value: AssessmentKey) => {
+            const box = document.querySelector<HTMLInputElement>(
+              `#assessment-interest input[type=checkbox][value="${value}"]`
+            );
+            if (box) box.checked = true;
+          });
+          sessionStorage.setItem("rac_cta_origin", `chip recommendation: ${recommendation.primary}`);
+        });
+        chipResult.appendChild(link);
+      };
+
+      chipButtons.forEach((button) => {
+        const label = (button.textContent || "").trim();
+        const onChipClick = () => {
+          if (selected.has(label)) {
+            selected.delete(label);
+            button.classList.remove("sel");
+            button.setAttribute("aria-pressed", "false");
+          } else {
+            selected.add(label);
+            button.classList.add("sel");
+            button.setAttribute("aria-pressed", "true");
+          }
+          applyRecommendation();
+        };
+        button.addEventListener("click", onChipClick);
+        cleanups.push(() => button.removeEventListener("click", onChipClick));
+      });
+    }
+
     const form = document.querySelector<HTMLFormElement>(".brief-image9-form");
     if (form) {
       const status = document.createElement("div");
@@ -107,6 +157,7 @@ export default function V12ClientController() {
           fullName: nameInput.value.trim(),
           email: emailInput.value.trim(),
           interests,
+          focusAreas: JSON.parse(sessionStorage.getItem("rac_focus_areas") || "[]"),
           ctaOrigin: sessionStorage.getItem("rac_cta_origin") || undefined,
           referredBy: sessionStorage.getItem("rac_referred_by") || undefined,
           sessionReferralCode: buildSessionReferralCode(),
