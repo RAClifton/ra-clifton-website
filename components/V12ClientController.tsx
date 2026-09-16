@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { recommendFromChips, type AssessmentKey } from "@/lib/chip-recommendations";
 
 type LeadPayload = {
   fullName: string;
@@ -178,52 +177,56 @@ export default function V12ClientController() {
       });
     }
 
-    // "Not sure where to start?" — chips record intent and recommend one next step.
+    /**
+     * The improvement pills appear twice: under "Not sure where to start?" and
+     * again inside the signup box. They are ONE answer shown in two places, so a
+     * click on either copy updates every button carrying that label.
+     *
+     * They deliberately do not recommend an assessment and do not tick any
+     * checkbox. The checkboxes are what the visitor asks for; the pills are what
+     * they say they care about. Both are captured when they submit.
+     */
     const chipButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".chips button"));
     const chipResult = document.getElementById("chip-result");
-    if (chipButtons.length && chipResult) {
-      const selected = new Set<string>();
+    if (chipButtons.length) {
+      const labelOf = (b: HTMLButtonElement) => (b.textContent || "").trim();
+      const selected = new Set<string>(
+        safeGetJSON<unknown>("rac_focus_areas", []) instanceof Array
+          ? (safeGetJSON<unknown[]>("rac_focus_areas", []).filter(
+              (v): v is string => typeof v === "string" && v.trim().length > 0
+            ) as string[])
+          : []
+      );
 
-      const applyRecommendation = () => {
-        const labels = Array.from(selected);
-        safeSet("rac_focus_areas", JSON.stringify(labels));
+      const render = () => {
+        chipButtons.forEach((b) => {
+          const on = selected.has(labelOf(b));
+          b.classList.toggle("sel", on);
+          b.setAttribute("aria-pressed", String(on));
+        });
 
-        const recommendation = recommendFromChips(labels);
+        if (!chipResult) return;
         chipResult.textContent = "";
-        if (!recommendation) return;
-
+        if (selected.size === 0) return;
         const link = document.createElement("a");
         link.href = "#assessment-interest";
-        link.textContent = recommendation.message;
-        link.addEventListener("click", () => {
-          recommendation.checkboxValues.forEach((value: AssessmentKey) => {
-            const box = document.querySelector<HTMLInputElement>(
-              `#assessment-interest input[type=checkbox][value="${value}"]`
-            );
-            if (box) box.checked = true;
-          });
-          safeSet("rac_cta_origin", `chip recommendation: ${recommendation.primary}`);
-        });
+        link.textContent = "Tell us where to send it \u2192";
         chipResult.appendChild(link);
       };
 
       chipButtons.forEach((button) => {
-        const label = (button.textContent || "").trim();
         const onChipClick = () => {
-          if (selected.has(label)) {
-            selected.delete(label);
-            button.classList.remove("sel");
-            button.setAttribute("aria-pressed", "false");
-          } else {
-            selected.add(label);
-            button.classList.add("sel");
-            button.setAttribute("aria-pressed", "true");
-          }
-          applyRecommendation();
+          const label = labelOf(button);
+          if (selected.has(label)) selected.delete(label);
+          else selected.add(label);
+          safeSet("rac_focus_areas", JSON.stringify(Array.from(selected)));
+          render();
         };
         button.addEventListener("click", onChipClick);
         cleanups.push(() => button.removeEventListener("click", onChipClick));
       });
+
+      render();
     }
 
     const form = document.querySelector<HTMLFormElement>(".brief-image9-form");
@@ -245,17 +248,17 @@ export default function V12ClientController() {
         const interests = Array.from(document.querySelectorAll<HTMLInputElement>("#assessment-interest input[type=checkbox]:checked"))
           .map((input) => input.closest("label")?.textContent?.trim().replace(/\s+/g, " ") || input.value)
           .filter(Boolean);
-        // Stored focus areas are only ever written by applyRecommendation above,
-        // but the value is user-reachable, so it is validated before it is sent:
-        // anything that is not an array of non-empty strings would fail Zod
-        // server-side and show the visitor a confusing error.
-        const storedFocusAreas = safeGetJSON<unknown>("rac_focus_areas", []);
-        const focusAreas = Array.isArray(storedFocusAreas)
-          ? storedFocusAreas
-              .filter((entry): entry is string => typeof entry === "string" && entry.trim().length > 0)
-              .map((entry) => entry.trim())
-              .slice(0, 10)
-          : [];
+        // Read straight off the page rather than out of storage: the pills now
+        // sit inside this form, so what is selected on screen at the moment they
+        // press the button is the honest answer. Deduplicated because the same
+        // label is rendered in both pill groups.
+        const focusAreas = Array.from(
+          new Set(
+            Array.from(document.querySelectorAll<HTMLButtonElement>(".chips button.sel"))
+              .map((b) => (b.textContent || "").trim())
+              .filter((label) => label.length > 0)
+          )
+        ).slice(0, 10);
 
         const payload: LeadPayload = {
           fullName: nameInput.value.trim(),
