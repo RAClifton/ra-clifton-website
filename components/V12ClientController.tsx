@@ -82,7 +82,7 @@ export default function V12ClientController() {
     const cleanups: Array<() => void> = [];
 
     // Preserve approved smooth-scroll destinations while recording CTA origin.
-    document.querySelectorAll<HTMLAnchorElement>('a[href="#assessment-interest"], a[href="#why-ai-now"]').forEach((a) => {
+    document.querySelectorAll<HTMLAnchorElement>('a[href="#assessment-interest"]').forEach((a) => {
       const onClick = () => {
         const origin = (a.textContent || a.getAttribute("aria-label") || "assessment-cta").trim().replace(/\s+/g, " ");
         safeSet("rac_cta_origin", origin.slice(0, 160));
@@ -134,11 +134,20 @@ export default function V12ClientController() {
         const url = new URL(window.location.href);
         url.hash = "assessment-interest";
         url.searchParams.set("ref", code);
-        const subject = "Complimentary AI Readiness Score";
+        // Written to read like a person forwarding something, not a broadcast:
+        // a reason to open it, what they get, what it costs them, and the link.
+        const subject = "Thought this might be useful \u2014 free AI readiness score";
         const body = [
-          "I thought you might find this useful. R.A. Clifton is offering complimentary pre-launch access to its AI Readiness Score.",
+          "I came across this and thought of you.",
           "",
-          `Get started here: ${url.toString()}`,
+          "R.A. Clifton, a CPA and business advisory firm, is giving complimentary access to their AI Readiness Score\u2122 during pre-launch. It takes about five minutes and shows you where your business actually stands with AI \u2014 what you are already set up for, where the practical opportunities are, and what is worth doing first.",
+          "",
+          "No cost, nothing to install, and your results come back straight away.",
+          "",
+          "Get your score here:",
+          url.toString(),
+          "",
+          "Your information stays private and secure.",
         ].join("\n");
         shareBtn.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       };
