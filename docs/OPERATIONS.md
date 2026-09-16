@@ -202,18 +202,27 @@ Verified working on the **public** site, not just locally:
 - HTTPS with a Let's Encrypt certificate (expires 14 December 2026, auto-renews)
 - Replies to `research@raclifton.com` forward to Gmail
 
-The database currently holds **zero rows** — all test data was deleted, so
-anything that appears from now on is a real lead.
+The database held **zero rows** at the end of session 2. It does not any more:
+v14.2 testing put 2 rows into `website_leads` and 3 into
+`research_report_leads`, all Clifton's own. **Preview deployments write to the
+production database** — they share `DATABASE_URL` — so testing a preview
+creates real rows in real tables. Purge again before real leads arrive.
 
 ### Open items
 
 | # | Item | Owner |
 |---|---|---|
 | 1 | ~~Submit both forms through a real browser~~ — **done 15 Sep**, `joined = true` | Closed |
-| 2 | Safari pass at a couple of widths | **Clifton** |
+| 2 | Safari **visual** pass at a couple of widths — its form handling is already proven | **Clifton** |
 | 3 | Decide whether to publish the revised research report PDF to the site | **Clifton** |
 | 4 | Delete `~/.raclifton-setup-tokens` and `~/.raclifton-db` | Claude, on your say-so |
 | 5 | Vercel token expires **14 October 2026** | Note only — see SOP 4 |
+| 6 | **Hero and header text is still fuzzy** — the original v14.2 ask, attempted and reverted. See SESSION-3-TRANSCRIPT.md before retrying | **Clifton** |
+| 7 | Purge the lead tables again — v14.2 testing put rows back | Claude, on your say-so |
+| 8 | Look at the redesigned report email; the sends on record used the old one | **Clifton** |
+| 9 | Confirm the share card renders — paste the site into Slack or iMessage | **Clifton** |
+| 10 | Footer *Resources / About / Contact* go nowhere; *Privacy* and *Terms* are not links | **Clifton** |
+| 11 | `POST /api/leads` has no rate limit, honeypot or CAPTCHA | Pre-existing |
 
 **This was closed on 15 September.** Both paths were driven through a real
 Chrome instance and the attribution join came back `true`. SOP 6 is kept below
@@ -241,6 +250,12 @@ deliberately if you ever want them working.
 ## 3. SOPs
 
 ### SOP 1 — Make a change to the site and publish it
+
+> **Superseded by SOP 9 in [SESSION-HANDOFF.md](SESSION-HANDOFF.md).** That
+> version branches, previews, and waits for Clifton's approval before anything
+> reaches production, which is how v14.2 was shipped. Use it instead. The
+> original is kept below because its individual commands are still correct.
+
 
 The thing you'll do most often. Roughly ten minutes.
 

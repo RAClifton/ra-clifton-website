@@ -78,7 +78,10 @@
 - [x] environment variables configured — all 4, secrets encrypted
 - [x] deployment succeeds
 - [x] Chrome tested — 15 Sep
-- [~] Safari tested — *still not run; Chrome verified, incl. a scripted real-browser pass*
+- [~] Safari tested — *forms yes, visuals no.* Four of the seven purged test
+      rows carried a macOS Safari 26.5.2 user agent and submitted successfully
+      (both lead paths). **Nobody has viewed the live site in Safari at the
+      eight widths** — that is the part still outstanding.
 - [x] 1440 tested
 - [x] 1280 tested
 - [x] 1024 tested
@@ -162,5 +165,85 @@ Observed, in one tab, without reloading:
 
 Test rows purged afterwards.
 
-**Still not done:** Safari has never been opened against the site, and nobody
-has looked at the live site with human eyes at every width since go-live.
+**Still not done:** nobody has looked at the live site with human eyes at every
+width since go-live, in any browser. Safari specifically has processed both
+lead forms successfully (proven by the user agents on the purged test rows) but
+has never been used for a *visual* pass.
+
+## Test data purged — 15 September 2026
+
+The seven test rows left over from launch day, all from `alphaonerac@gmail.com`,
+were exported and then deleted. Both tables are back to **0 rows**, so anything
+appearing from now on is a genuine lead.
+
+The export lives at `~/Desktop/raclifton-test-leads-purged-2026-09-15.csv` —
+deliberately outside the repository, because a CSV of lead data inside the
+project folder would be committed to Git on the next `git add -A`.
+
+Deletion was done by explicit row ID rather than by email address, so a real
+lead arriving later from that same address could not be caught by a re-run.
+
+> **No longer true as of 16 September.** v14.2 testing put rows back into both
+> tables — see below. They need purging again before real leads arrive.
+
+
+---
+
+# v14.2 — shipped 16 September 2026
+
+Tagged `v14.2-live`, merge commit `e8f6433`. Full account in
+[docs/SESSION-3-TRANSCRIPT.md](docs/SESSION-3-TRANSCRIPT.md).
+
+## What shipped
+
+- [x] "Not sure where to start?" pills select, and show which one you clicked
+- [x] The same five pills mirrored into the "Interested in Our Assessments?"
+      box under "What would you like to improve?", kept in sync as one answer
+- [x] Pill selections captured to `website_leads.focus_areas` — **verified on
+      production with a real row**
+- [x] Referral email carries a real tracked URL with the sharer's referral code
+- [x] Referral email ships in the markup, so it works with no JavaScript
+- [x] Open Graph card so the shared link previews with the report cover
+- [x] Research report email redesigned — cover, button, preheader, disclosure
+- [x] Report cover added to the lead-magnet modal, where the arrow points
+- [x] Invisible hotspots over the painted desktop hero and header buttons, both
+      of which had never been clickable
+- [x] `sessionStorage` hardened — a `SecurityError` in Safari with cookies
+      blocked was aborting the mount effect before the form's submit listener
+      registered, losing leads silently with no error shown
+- [x] `focus_areas` migration applied to Neon (additive, backward-compatible)
+- [x] Test suite added; `npm run lint` replaced with `npm run typecheck`
+      because `next lint` was removed in Next 16
+- [x] 19 MB of design source images moved out of the published folder
+
+## Deliberately not shipped
+
+- [ ] **The header and hero text is still fuzzy.** This was the original ask.
+      It is still a 773×515 image stretched roughly 4× on high-DPI screens. A
+      rebuild was attempted, went wrong over four rounds, and was reverted in
+      full. Clifton is addressing it separately
+- [ ] **Second hero CTA pointing at the research report.** Not possible while
+      the hero is a flat image — a button that is not painted into the artwork
+      cannot be added without changing the design
+
+## Verified on production, 16 September
+
+- [x] 16 structural checks against `www.raclifton.com`
+- [x] Hero and header confirmed byte-identical to the previous live version
+- [x] `share-card.jpg`, `report-cover.jpg` and the report PDF all serve `200`
+- [x] A real lead POSTed to the production API, confirmed in Neon, then deleted
+
+## Still outstanding after v14.2
+
+- [ ] **Purge the lead tables again.** `website_leads` has 2 rows and
+      `research_report_leads` has 3, all from Clifton's own testing.
+      **Preview deployments write to the production database** — they share
+      `DATABASE_URL`
+- [ ] Look at the redesigned report email. The three sends on record went out
+      under the old plain version; request the report once to see the new one
+- [ ] Confirm the share card renders — paste `www.raclifton.com` into Slack,
+      iMessage or LinkedIn
+- [ ] Safari **visual** pass, still never done
+- [ ] Footer "Resources", "About" and "Contact" link to `#`; "Privacy" and
+      "Terms" are plain text, not links, on a site that stores emails and IPs
+- [ ] `POST /api/leads` has no rate limit, honeypot or CAPTCHA
