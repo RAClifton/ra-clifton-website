@@ -1178,3 +1178,21 @@ button,a,input{touch-action:manipulation}
 .focus-chips button:hover{border-color:rgba(255,255,255,.52)}
 .focus-chips button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .focus-chips button.sel{background:var(--gold);border-color:var(--gold);color:#17130b;font-weight:800}
+
+/* The report cover sits at the end of the submit row, so the arrow on
+   "Get the Research Report →" points straight at the thing being offered.
+   Clicking it drops the cursor into the first field.
+   .report-modal-form button already paints every button in this form gold, so
+   these rules need the extra specificity to undo that for the cover. */
+.report-modal-submit{display:flex;align-items:center;gap:12px}
+.report-modal-submit>button[type="submit"]{flex:1 1 auto;min-width:0}
+.report-modal-form .report-cover-peek{
+  flex:0 0 76px;width:76px;min-height:0;padding:0;overflow:hidden;line-height:0;
+  background:#0a1a22;border:1px solid rgba(8,24,32,.22);border-radius:4px;
+  box-shadow:0 6px 18px rgba(8,24,32,.22);cursor:pointer;
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+.report-modal-form .report-cover-peek:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(8,24,32,.3)}
+.report-modal-form .report-cover-peek:focus-visible{outline:2px solid #9b6a18;outline-offset:2px}
+.report-cover-peek img{width:100%;height:auto;display:block}
+@media(prefers-reduced-motion:reduce){.report-modal-form .report-cover-peek{transition:none}.report-modal-form .report-cover-peek:hover{transform:none}}

@@ -23,6 +23,7 @@ export default function ResearchReportLeadMagnet() {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const dialog = useRef<HTMLDivElement>(null);
+  const nameField = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const trigger = document.querySelector<HTMLButtonElement>(".research-report-trigger");
@@ -67,9 +68,30 @@ export default function ResearchReportLeadMagnet() {
         <h2 id="report-title">AI for a Small Business:<br/><span>The Case for Starting Now.</span></h2>
         <p className="report-modal-deck">A decision brief for business owners who want a practical, measured way to evaluate AI—without hype or a wholesale transformation.</p>
         <form className="report-modal-form" onSubmit={submit}>
-          <label>Full Name<input name="fullName" type="text" autoComplete="name" required minLength={2}/></label>
+          <label>Full Name<input ref={nameField} name="fullName" type="text" autoComplete="name" required minLength={2}/></label>
           <label>Email Address<input name="email" type="email" autoComplete="email" required/></label>
-          <button type="submit" disabled={busy}>{busy ? "Preparing…" : "Get the Research Report →"}</button>
+          <div className="report-modal-submit">
+            <button type="submit" disabled={busy}>{busy ? "Preparing…" : "Get the Research Report →"}</button>
+            {/* The arrow on the button points straight at this. Clicking it puts
+                the cursor in the first field, so someone drawn to the cover
+                lands where they can actually act. */}
+            <button
+              type="button"
+              className="report-cover-peek"
+              onClick={() => {
+                nameField.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                nameField.current?.focus();
+              }}
+              aria-label="Enter your name and email to get this report"
+            >
+              <img
+                src="/assets/report-cover.jpg"
+                alt="Cover of the decision brief: AI for a Small Business, The Case for Starting Now"
+                width={560}
+                height={726}
+              />
+            </button>
+          </div>
           <small>Immediate access after submission. We’ll also email you a copy.</small>
           <div className="report-modal-status" aria-live="polite">{status}</div>
         </form>
