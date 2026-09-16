@@ -91,7 +91,19 @@ Delete from `app/page.tsx`:
 
 Delete `public/assets/v12-7242292f4feb.webp` and `public/assets/v12-4d19b6827147.webp`.
 
-The hero visual column keeps the live `.dash` metrics card and gains the four-item feature row from the approved composition (Real Insights / Practical Solutions / Experienced Guidance / A Stronger Tomorrow), rebuilt as real HTML with inline SVG icons. The trust row's text glyphs (`◷ ◇ ▣`) are replaced with inline SVG clock, shield and lock icons to match the approved design.
+**Layout correction (2026-09-15):** the approved desktop hero is a **full-bleed photographic composition**, not the two-column layout the live HTML currently uses. The live `.hero` is a `.43fr/.57fr` grid with `.hero-visual` capped at `max-width:680px` — that is the *tablet* design. Simply enabling it at ≥1024px would replace the approved full-bleed look with a narrow two-column one. The user has confirmed the full-bleed composition is to be preserved.
+
+Desktop (≥1024px) therefore renders as:
+
+- Full-width background photograph (clean plate, see Appendix A), `background-size:cover`, with a left-weighted dark gradient scrim for text contrast
+- Headline, eyebrow, body copy, feature row, both CTAs and trust row overlaid as real HTML on the left
+- The metrics panel rebuilt as real HTML on the right, reusing the existing `.dash` glassmorphism treatment (`backdrop-filter:blur(10px)`, translucent navy, hairline border) scaled up to match the approved artwork
+
+This makes the dashboard figures (`$7.4M`, `36.7%`, `$963K`, the `87` ring) editable content rather than pixels. They are currently baked into the image and cannot be changed.
+
+Tablet (768–1023px) keeps its existing two-column layout. Phone (≤767px) uses the same background plate, centre-cropped to portrait, with content stacked.
+
+The four-item feature row from the approved composition (Real Insights / Practical Solutions / Experienced Guidance / A Stronger Tomorrow) is rebuilt as real HTML with inline SVG icons. The trust row's text glyphs (`◷ ◇ ▣`) are replaced with inline SVG clock, shield and lock icons to match the approved design.
 
 ### 3.2 Hero buttons
 
@@ -283,22 +295,74 @@ Migration `003` is applied to Neon before the preview deploy.
 
 ## Appendix A — Hero photograph specification
 
-**File:** save as `public/assets/hero-executive.webp` (or `.jpg`/`.png` — conversion is trivial)
+The photograph is a **clean background plate**. Everything currently painted onto it — headline, dashboard panels, buttons, feature icons, book-spine lettering — is rebuilt as real HTML on top. The image must contain none of it.
 
-**Dimensions:** minimum **2000 × 2500px** (4:5 portrait). Larger is fine. This covers a ~950px-wide slot at 2× on high-DPI displays.
+### Technical requirements
 
-**Hard requirements:**
+| | |
+|---|---|
+| **Orientation** | Landscape, **3:2** |
+| **Minimum size** | 2048 × 1365px |
+| **Ideal size** | 2880 × 1920px |
+| **Format to send** | PNG or JPG, whatever the generator produces |
+| **Final format** | WebP — converted with `sharp`, already installed |
+| **Filename** | Anything; it gets renamed to `hero-executive.webp` |
 
-- **No text of any kind in the image** — no labels, no UI, no charts, no dashboards, no numbers, no watermark. This is what ruined the current asset.
-- Subject positioned **centre-to-right**, leaving the left third quieter — the headline sits over that side on tablet.
-- Dark, low-key exposure. It sits on a `#07131b` navy background and must blend, not float.
+Do not upscale a small render to hit these numbers. Upscaling resamples pixels without adding detail and reintroduces exactly the softness this change exists to fix. Generate large natively.
 
-**Prompt to paste into your image generator:**
+One landscape plate serves every breakpoint: desktop uses it full-bleed, phone uses a centre crop to 4:5 portrait. No second image is needed.
 
-> Photorealistic editorial portrait of a confident executive business advisor in their fifties, wearing a well-tailored charcoal suit, standing in a darkened modern high-rise office at dusk. Floor-to-ceiling windows behind them reveal an out-of-focus city skyline with warm amber lights. Low-key cinematic lighting with a warm gold rim light along the subject's shoulder and jaw, deep navy and charcoal shadows filling the frame. Shot on an 85mm lens at f/1.8, shallow depth of field, subtle film grain. The subject is positioned right of centre, leaving calm negative space on the left. Restrained, premium, corporate-editorial mood. No text, no graphics, no charts, no user interface elements, no logos, no watermarks.
+### Composition zones
 
-**Negative prompt, if your tool supports one:**
+```
+┌──────────────────┬──────────────────┬──────────────────┐
+│   LEFT THIRD     │   CENTRE THIRD   │   RIGHT THIRD    │
+│                  │                  │                  │
+│  Dark, calm,     │   The executive  │  City skyline,   │
+│  uncluttered.    │   at his desk.   │  softly blurred. │
+│  Headline and    │   Main subject,  │  Glass metrics   │
+│  buttons sit     │   sharp focus.   │  panel sits      │
+│  here.           │                  │  here.           │
+│                  │                  │                  │
+│  KEEP EMPTY      │   HERO SUBJECT   │  KEEP SIMPLE     │
+└──────────────────┴──────────────────┴──────────────────┘
+```
 
-> text, words, letters, numbers, charts, graphs, dashboards, UI elements, logos, watermarks, captions, subtitles, signage
+Both outer thirds carry HTML content on top of them. Busy detail there fights the text and ruins legibility.
 
-Iterate until the left third is calm and there is genuinely no text anywhere in the frame, then hand the file over.
+### The prompt
+
+> A premium, photorealistic editorial business portrait for a high-end financial advisory firm. A distinguished male executive in his early fifties sits at a dark walnut desk in a sophisticated corner office of a modern glass high-rise, photographed during blue hour.
+>
+> **Subject:** He has neatly styled salt-and-pepper hair swept back, light stubble, and refined black-framed rectangular eyeglasses. He wears an impeccably tailored midnight-navy suit jacket over a crisp white dress shirt with the collar open, a slim gold watch on his wrist. He holds a slender fountain pen thoughtfully near his chin, gaze directed slightly up and off-camera to his left in a moment of genuine contemplation — composed, intelligent, quietly authoritative. Not smiling, not posed, not looking at the camera.
+>
+> **Environment:** Floor-to-ceiling windows fill the background, revealing a dense metropolitan skyline at dusk — glass towers with thousands of warm amber office lights rendered as soft creamy bokeh, a deep indigo-to-charcoal sky above. The desk surface holds a few restrained props: a closed or nearly-closed laptop angled away from camera with a completely dark screen, a leather-bound notepad, a plain matte black ceramic mug with no markings, a small stack of hardcover books with entirely blank unmarked spines, and a single small green plant in a dark pot. Everything sits in shadow, understated and expensive.
+>
+> **Composition:** Wide landscape 3:2 framing. The executive occupies the centre of the frame. The left third is deliberately darker and almost empty — shadowed office wall and desk edge falling off into near-black, generous negative space. The right third shows mostly the window and blurred skyline, kept visually simple and uncluttered.
+>
+> **Lighting:** Low-key cinematic lighting. A soft warm golden key light from the upper right catches the side of his face, his glasses and his shoulder. A cool subtle blue fill from the window rims his opposite edge. Deep navy and charcoal shadows fill the frame. Rich contrast, luminous highlights, nothing blown out.
+>
+> **Colour:** Restrained palette of deep navy `#07131b`, charcoal, warm gold and amber accents, muted skin tones. Cohesive and moody.
+>
+> **Camera:** Shot on a Canon EOS R5 with an 85mm f/1.4 lens at f/2.0. Shallow depth of field, subject tack sharp, background beautifully soft. Subtle natural film grain. Crisp, high-resolution, professional commercial photography.
+>
+> **Mood:** Premium, understated, trustworthy, editorial. The visual language of a Wall Street Journal executive profile or a luxury private-bank campaign.
+>
+> **Critical:** Absolutely no text, letters, numbers, words, or typography anywhere in the image. No charts, graphs, data visualisations, dashboards, floating UI panels, holograms, or screen overlays. No logos, watermarks, signage, or branding. Book spines must be completely blank. All screens must be dark and empty.
+
+### Negative prompt
+
+If your tool has a negative prompt field, paste this:
+
+> text, letters, words, numbers, typography, captions, watermark, logo, signage, branding, charts, graphs, data visualization, dashboard, UI, interface, hologram, floating panels, screen glow, screen content, cluttered desk, busy background, harsh lighting, overexposed, HDR, cartoon, illustration, 3D render, plastic skin, distorted hands, extra fingers, malformed glasses
+
+### Acceptance checklist
+
+Before handing the file over, confirm:
+
+- [ ] Zero text anywhere — check book spines, laptop screen, mug, window reflections
+- [ ] No floating dashboard or chart panels
+- [ ] Left third is dark and empty enough to carry white headline text
+- [ ] Right third is simple enough for a translucent panel to sit over it
+- [ ] Hands and glasses are anatomically correct — generators fail here often
+- [ ] At least 2048px on the long edge
