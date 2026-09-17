@@ -352,6 +352,44 @@ footer{padding:48px 0 36px;background:#051119;color:white} .foot{display:grid;ga
   font-size:10px;
 }
 
+/* v14.3: optional free-text message on the assessment-interest form. */
+.brief-image9-form textarea{
+  min-height:120px;
+  resize:vertical;
+  border:1px solid rgba(8,24,32,.16);
+  border-radius:4px;
+  padding:10px 12px;
+  font-family:inherit;
+  font-size:14px;
+  line-height:1.5;
+  background:#fff;
+  color:#101820;
+}
+.brief-image9-form textarea::placeholder{
+  color:#6d7b85;
+}
+.brief-image9-form textarea:focus-visible,
+.brief-image9-form input:focus-visible{
+  outline:2px solid var(--gold);
+  outline-offset:1px;
+}
+.brief-message-counter{
+  margin:-2px 0 0;
+  text-align:right;
+  font-size:10px;
+  font-variant-numeric:tabular-nums;
+  color:rgba(255,255,255,.62);
+}
+.brief-message-counter[data-state="near"]{
+  color:#ffe2a8;
+}
+.brief-message-counter[data-state="full"]{
+  color:#ffd6d6;
+}
+@media(min-width:768px){
+  .brief-image9-form textarea{min-height:168px}
+}
+
 /* TABLET AND DESKTOP: restore the Image 8 and Image 9 side-by-side compositions */
 @media(min-width:768px){
   .five-image8-wrap{

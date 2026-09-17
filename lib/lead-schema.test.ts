@@ -29,3 +29,29 @@ describe("leadSchema focusAreas", () => {
     expect(() => leadSchema.parse({ focusAreas: ["Growth"] })).toThrow();
   });
 });
+
+describe("leadSchema message", () => {
+  it("is optional — a lead with no message still parses", () => {
+    const parsed = leadSchema.parse(base);
+    expect(parsed.message).toBeUndefined();
+  });
+
+  it("keeps a normal message", () => {
+    const parsed = leadSchema.parse({ ...base, message: "How should we start with AI?" });
+    expect(parsed.message).toBe("How should we start with AI?");
+  });
+
+  it("accepts a message at the 1,000 character cap", () => {
+    const parsed = leadSchema.parse({ ...base, message: "x".repeat(1000) });
+    expect(parsed.message).toHaveLength(1000);
+  });
+
+  it("rejects a message over 1,000 characters", () => {
+    expect(() => leadSchema.parse({ ...base, message: "x".repeat(1001) })).toThrow();
+  });
+
+  it("trims surrounding whitespace", () => {
+    const parsed = leadSchema.parse({ ...base, message: "  padded  " });
+    expect(parsed.message).toBe("padded");
+  });
+});

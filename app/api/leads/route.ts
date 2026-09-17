@@ -18,13 +18,13 @@ export async function POST(request: Request) {
   }
 
   const referralCode = parsed.data.sessionReferralCode || `rac_${crypto.randomUUID().replaceAll("-", "").slice(0, 12)}`;
-  const { fullName, email, interests, focusAreas, ctaOrigin, referredBy, researchReportLeadId } = parsed.data;
+  const { fullName, email, interests, focusAreas, message, ctaOrigin, referredBy, researchReportLeadId } = parsed.data;
 
   await sql`
     INSERT INTO website_leads
-      (full_name, email, interests, focus_areas, cta_origin, referred_by, referral_code, research_report_lead_id, ip_address, user_agent)
+      (full_name, email, interests, focus_areas, message, cta_origin, referred_by, referral_code, research_report_lead_id, ip_address, user_agent)
     VALUES
-      (${fullName}, ${email.toLowerCase()}, ${JSON.stringify(interests)}::jsonb, ${JSON.stringify(focusAreas)}::jsonb, ${ctaOrigin || null}, ${referredBy || null}, ${referralCode}, ${researchReportLeadId || null}, ${ip}, ${userAgent})
+      (${fullName}, ${email.toLowerCase()}, ${JSON.stringify(interests)}::jsonb, ${JSON.stringify(focusAreas)}::jsonb, ${message || null}, ${ctaOrigin || null}, ${referredBy || null}, ${referralCode}, ${researchReportLeadId || null}, ${ip}, ${userAgent})
   `;
 
   return NextResponse.json({ ok: true, referralCode }, { status: 201 });

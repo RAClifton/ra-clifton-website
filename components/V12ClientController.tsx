@@ -7,6 +7,7 @@ type LeadPayload = {
   email: string;
   interests: string[];
   focusAreas: string[];
+  message?: string;
   ctaOrigin?: string;
   referredBy?: string;
   sessionReferralCode?: string;
@@ -236,6 +237,23 @@ export default function V12ClientController() {
       status.setAttribute("aria-live", "polite");
       form.appendChild(status);
 
+      // Live character counter for the optional message box. maxlength already
+      // stops typing past the cap; this just tells the visitor where they are.
+      const messageInput = form.querySelector<HTMLTextAreaElement>("#brief-message");
+      const counter = form.querySelector<HTMLElement>("#brief-message-counter");
+      const counterValue = counter?.querySelector<HTMLElement>(".brief-message-count");
+      if (messageInput && counter && counterValue) {
+        const MESSAGE_MAX = 1000;
+        const renderCount = () => {
+          const used = messageInput.value.length;
+          counterValue.textContent = used.toLocaleString("en-US");
+          counter.dataset.state = used >= MESSAGE_MAX ? "full" : used >= MESSAGE_MAX * 0.9 ? "near" : "";
+        };
+        messageInput.addEventListener("input", renderCount);
+        cleanups.push(() => messageInput.removeEventListener("input", renderCount));
+        renderCount();
+      }
+
       const onSubmit = async (event: Event) => {
         event.preventDefault();
         const nameInput = form.querySelector<HTMLInputElement>('input[type="text"]');
@@ -265,6 +283,7 @@ export default function V12ClientController() {
           email: emailInput.value.trim(),
           interests,
           focusAreas,
+          message: messageInput?.value.trim() ? messageInput.value.trim().slice(0, 1000) : undefined,
           ctaOrigin: safeGet("rac_cta_origin") || undefined,
           referredBy: safeGet("rac_referred_by") || undefined,
           sessionReferralCode: buildSessionReferralCode(),
@@ -287,6 +306,10 @@ export default function V12ClientController() {
           status.dataset.state = "success";
           status.textContent = "Thank you. Your information has been received.";
           form.reset();
+          if (counterValue) {
+            counterValue.textContent = "0";
+            if (counter) counter.dataset.state = "";
+          }
         } catch (error) {
           status.dataset.state = "error";
           status.textContent = error instanceof Error ? error.message : "Unable to submit right now.";
