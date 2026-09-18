@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSql } from "@/lib/db";
+import { REPORT_PATH } from "@/lib/report";
 
 export const runtime = "edge";
 
@@ -9,8 +10,6 @@ const schema = z.object({
   email: z.string().trim().email().max(254),
   ctaOrigin: z.literal("why_ai_research_section").default("why_ai_research_section"),
 });
-
-const REPORT_PATH = "/research/ai-for-a-small-business-the-case-for-starting-now.pdf";
 
 /**
  * Email HTML is not web HTML. Outlook renders through Word, Gmail strips <style>

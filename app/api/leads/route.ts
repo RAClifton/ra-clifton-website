@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { getSql } from "@/lib/db";
 import { leadSchema } from "@/lib/lead-schema";
+import { sendLeadNotification } from "@/lib/lead-notification";
+import { sendLeadConfirmation } from "@/lib/lead-confirmation";
 
 export const runtime = "edge";
 
@@ -26,6 +28,33 @@ export async function POST(request: Request) {
     VALUES
       (${fullName}, ${email.toLowerCase()}, ${JSON.stringify(interests)}::jsonb, ${JSON.stringify(focusAreas)}::jsonb, ${message || null}, ${ctaOrigin || null}, ${referredBy || null}, ${referralCode}, ${researchReportLeadId || null}, ${ip}, ${userAgent})
   `;
+
+  // The lead is saved. Both emails from here are best-effort: if either fails,
+  // the lead is still captured and the visitor still sees a success. Failing
+  // loudly here would throw away a lead over a mail problem.
+  //
+  // allSettled, not sequential awaits: the visitor is waiting on this response,
+  // and one slow send should not be stacked on top of the other.
+  await Promise.allSettled([
+    sendLeadNotification({
+      fullName,
+      email: email.toLowerCase(),
+      interests,
+      focusAreas,
+      message,
+      ctaOrigin,
+      referredBy,
+      cameFromResearchReport: Boolean(researchReportLeadId),
+      receivedAt: new Date(),
+    }),
+    sendLeadConfirmation({
+      fullName,
+      email: email.toLowerCase(),
+      interests,
+      focusAreas,
+      alreadyHasReport: Boolean(researchReportLeadId),
+    }),
+  ]);
 
   return NextResponse.json({ ok: true, referralCode }, { status: 201 });
 }

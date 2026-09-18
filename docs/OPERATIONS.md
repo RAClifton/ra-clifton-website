@@ -41,12 +41,12 @@ they are stored.
 
 | File | Contains | Notes |
 |---|---|---|
-| `<project>/.env.local` | `DATABASE_URL`, `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | Git-ignored. This is what the site reads when running on your Mac. |
+| `<project>/.env.local` | `DATABASE_URL`, `NEXT_PUBLIC_SITE_URL`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `LEAD_NOTIFY_EMAIL` | Git-ignored. This is what the site reads when running on your Mac. |
 | `~/.raclifton-setup-tokens` | `CLOUDFLARE_API_TOKEN`, `VERCEL_TOKEN`, `CLOUDFLARE_EMAIL_TOKEN` | Outside the project folder so it can never be committed. Permissions `600` (only you can read it). |
 | `~/.raclifton-db` | `DATABASE_URL` | Same protection. |
 
 The live site does **not** read `.env.local` — Vercel keeps its own copy of
-those four variables. Changing one locally does **not** change the live site,
+those five variables. Changing one locally does **not** change the live site,
 and vice versa. See SOP 3.
 
 ### Database tables
@@ -292,6 +292,29 @@ Your browser is probably showing a cached copy.
 Both forms write to the Neon database. There's no admin screen in the site
 itself — this is how you see who signed up.
 
+**Since v14.4 you also get told.** When someone submits the assessment form,
+two emails go out, both from `research@raclifton.com`:
+
+| Who it goes to | What it says |
+|---|---|
+| **You**, at `LEAD_NOTIFY_EMAIL` | Their name, address, everything they ticked, what they want to improve, and any message. **Reply-To is set to the lead**, so hitting Reply in Gmail answers them directly — no copying addresses. |
+| **The lead** | A warm confirmation that reads their selections back to them, says the AI Readiness Score is still being finalised and they are on the early-access list, promises a reply **within two business days**, and offers the research brief meanwhile. Someone who already downloaded the brief is not pitched it again. |
+
+Three things to hold on to:
+
+1. **The two-business-day promise is in writing to every lead.** That is a
+   commitment you now have to keep. If you ever cannot, change the copy in
+   `lib/lead-confirmation.ts` rather than quietly missing it.
+2. **A mail failure never loses a lead.** The row is written to Neon first, and
+   both sends are best-effort — if Resend is down the visitor still succeeds and
+   the lead is still captured. The flip side: a broken email is silent, so if
+   alerts stop arriving, check `LEAD_NOTIFY_EMAIL` first.
+3. **Each submission now sends two emails.** Resend's free allowance is 3,000 a
+   month, so this is not close to a problem — but the meter is running.
+
+Neither email is sent by the *research report* form; that one has its own email
+and is unchanged.
+
 **The quick way:** ask Claude Code, "show me the leads in the database." It
 reads `DATABASE_URL` from `.env.local` and queries directly.
 
@@ -310,12 +333,38 @@ FROM research_report_leads
 ORDER BY created_at DESC;
 ```
 
-**Everyone who submitted the assessment form:**
+**Everyone who submitted the assessment form — the one to use day to day:**
 ```sql
-SELECT created_at, full_name, email, interests, referral_code
+SELECT to_char(created_at, 'Mon DD YYYY, HH12:MI AM') AS received,
+       full_name,
+       email,
+       array_to_string(ARRAY(SELECT jsonb_array_elements_text(interests)), ', ')
+         AS asked_about,
+       array_to_string(ARRAY(SELECT jsonb_array_elements_text(focus_areas)), ', ')
+         AS wants_to_improve,
+       message
 FROM website_leads
 ORDER BY created_at DESC;
 ```
+`asked_about` is the boxes they ticked. `wants_to_improve` is the pills they
+pressed — what they say they care about, which is often more useful than the
+boxes. `message` is what they typed in their own words, and is empty for most
+people.
+
+> The raw `interests` and `focus_areas` columns are stored in a format that
+> displays as `["AI", "Growth"]`. The `array_to_string(...)` wrapper above is
+> only there to turn that into plain readable text. Nothing else.
+
+**People who actually wrote you something — read these first:**
+```sql
+SELECT to_char(created_at, 'Mon DD YYYY, HH12:MI AM') AS received,
+       full_name, email, message
+FROM website_leads
+WHERE message IS NOT NULL AND message <> ''
+ORDER BY created_at DESC;
+```
+Someone who took the time to type a message is warmer than someone who only
+ticked a box. There will be few of them. Reply to every one.
 
 **The valuable one — assessment leads that came via the research report:**
 ```sql
@@ -327,6 +376,24 @@ ORDER BY w.created_at DESC;
 ```
 These people read the report first and then asked about the assessment. That's
 your warmest audience.
+
+**Which assessments people actually want** (tells you what to build next):
+```sql
+SELECT jsonb_array_elements_text(interests) AS assessment,
+       count(*)::int AS people
+FROM website_leads
+GROUP BY 1
+ORDER BY people DESC;
+```
+
+**What people want to improve** (tells you what to write and sell):
+```sql
+SELECT jsonb_array_elements_text(focus_areas) AS improvement_area,
+       count(*)::int AS people
+FROM website_leads
+GROUP BY 1
+ORDER BY people DESC;
+```
 
 **To export:** run the query, then use the **Download / Export** button above
 the results grid to get a CSV for Excel or Google Sheets.
@@ -364,7 +431,7 @@ save. Restart `npm run dev`.
 
 **Keep both in sync** unless you're deliberately testing something.
 
-**The four variables:**
+**The five variables:**
 
 | Variable | What it does | Careful |
 |---|---|---|
@@ -372,6 +439,7 @@ save. Restart `npm run dev`.
 | `RESEND_API_KEY` | Lets the site send email | Sending-access only — never full access |
 | `RESEND_FROM_EMAIL` | The "from" address | Must be on the verified `raclifton.com` domain |
 | `NEXT_PUBLIC_SITE_URL` | Builds links inside emails | Must be `https://www.raclifton.com` in production, or emailed links break |
+| `LEAD_NOTIFY_EMAIL` | Where "you have a new lead" alerts go | **If this is missing or wrong, leads are still saved but you are never told.** Nothing breaks and nothing warns you — check it after any environment change. Accepts several addresses separated by commas. |
 
 ---
 
