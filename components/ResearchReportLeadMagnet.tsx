@@ -26,11 +26,12 @@ export default function ResearchReportLeadMagnet() {
   const nameField = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const trigger = document.querySelector<HTMLButtonElement>(".research-report-trigger");
-    if (!trigger) return;
+    // Both the text link and the cover image beside it carry this class.
+    const triggers = document.querySelectorAll<HTMLButtonElement>(".research-report-trigger");
+    if (!triggers.length) return;
     const show = () => setOpen(true);
-    trigger.addEventListener("click", show);
-    return () => trigger.removeEventListener("click", show);
+    triggers.forEach((t) => t.addEventListener("click", show));
+    return () => triggers.forEach((t) => t.removeEventListener("click", show));
   }, []);
 
   useEffect(() => {
