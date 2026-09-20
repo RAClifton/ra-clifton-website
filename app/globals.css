@@ -1277,7 +1277,7 @@ button,a,input{touch-action:manipulation}
   .why-ai-report-cover:hover{transform:none}
 }
 
-/* === v14.3 FOOTER SOCIAL LINKS === */
+/* === FOOTER SOCIAL LINKS === */
 .footsocial{
   display:flex;
   align-items:center;
@@ -1288,7 +1288,7 @@ button,a,input{touch-action:manipulation}
   padding:0;
   list-style:none;
 }
-.footsocial a,.footsocial .footsocial-icon{
+.footsocial a{
   display:flex;
   align-items:center;
   justify-content:center;
@@ -1301,8 +1301,4 @@ button,a,input{touch-action:manipulation}
 .footsocial svg{width:19px;height:19px;fill:currentColor;display:block}
 .footsocial a:hover{color:var(--gold2);background:rgba(255,255,255,.06)}
 .footsocial a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-/* Placeholder state: the profiles are being rebranded, so the icons show the
-   intended placement without inviting a tap that goes nowhere. Dimmer than a
-   live link and with no hover affordance, so they do not read as clickable. */
-.footsocial .footsocial-icon{color:rgba(255,255,255,.34);cursor:default}
 @media(prefers-reduced-motion:reduce){.footsocial a{transition:none}}
