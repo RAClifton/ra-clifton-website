@@ -1,0 +1,10 @@
+# Security contact for raclifton.com
+# Format: RFC 9116 (https://www.rfc-editor.org/rfc/rfc9116)
+# If you have found a security issue affecting R.A. Clifton,
+# please report it to the address below. Thank you.
+
+Contact: mailto:security@raclifton.com
+Expires: 2027-09-01T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://raclifton.com/.well-known/security.txt
+Canonical: https://www.raclifton.com/.well-known/security.txt
