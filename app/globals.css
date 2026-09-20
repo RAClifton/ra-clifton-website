@@ -1302,3 +1302,28 @@ button,a,input{touch-action:manipulation}
 .footsocial a:hover{color:var(--gold2);background:rgba(255,255,255,.06)}
 .footsocial a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.footsocial a{transition:none}}
+
+/* === FOOTER ASSESSMENT CTA === */
+/* Its own row in the .foot grid, between the nav and the social icons. Carries
+   the same gold gradient as .btn so the footer's one action reads as the same
+   button as the hero and card CTAs, sized down like .sticky a for the footer.
+   justify-self keeps it to its own width; .foot is a grid, so without it the
+   link would stretch the full column. */
+.footcta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  justify-self:start;
+  min-height:52px;
+  padding:0 22px;
+  border-radius:7px;
+  background:linear-gradient(90deg,var(--gold2),var(--gold));
+  color:#17130b;
+  font-weight:850;
+  font-size:14px;
+  transition:filter .18s ease;
+}
+.footcta:hover{filter:brightness(1.06)}
+.footcta:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.footcta{transition:none}}
