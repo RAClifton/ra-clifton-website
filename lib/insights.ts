@@ -60,3 +60,14 @@ export async function getInsightById(id: string): Promise<Insight | null> {
   `) as any;
   return results?.[0] || null;
 }
+
+export async function getInsightBySlugAny(slug: string): Promise<Insight | null> {
+  const sql = getSql();
+  if (!sql) return null;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const results = (await sql`
+    SELECT * FROM insights WHERE slug = ${slug}
+  `) as any;
+  return results?.[0] || null;
+}

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getInsightBySlug, getInsightById } from "@/lib/insights";
-import { updateInsight, publishInsight, unpublishInsight, deleteInsight, getAuditLog } from "@/lib/insights-admin";
+import { getInsightBySlug, getInsightBySlugAny } from "@/lib/insights";
+import { updateInsight, publishInsight, unpublishInsight, deleteInsight } from "@/lib/insights-admin";
 import { insightUpdateSchema } from "@/lib/insights-schema";
 import { verifyAdminToken, extractTokenFromHeader } from "@/lib/insights-auth";
 
@@ -32,7 +32,7 @@ export async function PUT(
   }
 
   const { slug } = await params;
-  const insight = await getInsightBySlug(slug);
+  const insight = await getInsightBySlugAny(slug);
 
   if (!insight) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -78,7 +78,7 @@ export async function DELETE(
   }
 
   const { slug } = await params;
-  const insight = await getInsightBySlug(slug);
+  const insight = await getInsightBySlugAny(slug);
 
   if (!insight) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
