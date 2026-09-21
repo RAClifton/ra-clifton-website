@@ -15,12 +15,11 @@ const SHARE_TITLE = "Discover Your AI Readiness Score™ — R.A. Clifton™";
 const SHARE_DESCRIPTION =
   "See where your business actually stands with AI, and what is worth doing first. Complimentary during pre-launch, and about five minutes.";
 const SHARE_IMAGE_ALT =
-  "The R.A. Clifton brand mark: a gold-and-blue infinity symbol joining the words People and AI, above RAClifton.com and the line AI-First CPA & Business Advisory.";
+  "The R.A. Clifton brand mark — a gold-and-blue infinity symbol joining the words People and AI, above RAClifton.com — beside the headline “Discover Your AI Readiness Score™”, complimentary during pre-launch.";
 
 /**
- * The logo is square and the card slot is 1.91:1, so the mark is centred on the
- * brand navy rather than scaled to fill: a centre crop back to square (what
- * iMessage and WhatsApp often show) still contains the whole mark.
+ * Built by design-assets/build-share-card.py from the square brand mark, which
+ * cannot simply be dropped in: the mark is 1:1 and this slot is 1.91:1.
  * The filename is deliberately new. Facebook and LinkedIn cache a preview image
  * against its URL for a long time, so reusing share-card.jpg would have kept
  * serving the old card to anyone who had already shared the link.
