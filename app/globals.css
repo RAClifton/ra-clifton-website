@@ -1225,6 +1225,21 @@ button,a,input{touch-action:manipulation}
 .desktop-hero-headcta{left:71.54%;right:1.94%;top:1.94%;height:6.21%}
 .desktop-hero-cta:focus-visible,.desktop-hero-headcta:focus-visible{outline:3px solid #fff;outline-offset:3px}
 
+/* The five nav words painted into the same artwork, given real destinations.
+   Each hotspot was measured off the image: the words occupy y 21-29 and sit at
+   x 261-297, 319-357, 379-401, 423-451 and 472-501, padded by 6px on each side
+   and opened to a 26px-tall target. Expressed as percentages of the 773x515
+   artwork so they track the image at every desktop width. The gaps between
+   neighbours stay 8px or wider, and Contact clears the painted search icon at
+   x 524 by 16px, so no hotspot catches a click meant for another. */
+.desktop-hero-nav a{position:absolute;z-index:3;top:2.33%;height:5.05%;border-radius:4px}
+.desktop-hero-nav a:nth-child(1){left:32.99%;right:60.67%} /* Solutions */
+.desktop-hero-nav a:nth-child(2){left:40.49%;right:52.91%} /* Resources */
+.desktop-hero-nav a:nth-child(3){left:48.25%;right:47.22%} /* About     */
+.desktop-hero-nav a:nth-child(4){left:53.94%;right:40.75%} /* Insights  */
+.desktop-hero-nav a:nth-child(5){left:60.28%;right:34.28%} /* Contact   */
+.desktop-hero-nav a:focus-visible{outline:3px solid #fff;outline-offset:3px}
+
 /* Chips: .chips button.sel already carries the approved gold selected state,
    it simply had no code switching it on. These add the pointer, the hover
    and the focus ring only. */
