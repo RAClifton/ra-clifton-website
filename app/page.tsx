@@ -20,11 +20,20 @@ const SHARE_IMAGE_ALT =
 /**
  * Built by design-assets/build-share-card.py from the square brand mark, which
  * cannot simply be dropped in: the mark is 1:1 and this slot is 1.91:1.
- * The filename is deliberately new. Facebook and LinkedIn cache a preview image
- * against its URL for a long time, so reusing share-card.jpg would have kept
- * serving the old card to anyone who had already shared the link.
+ *
+ * Rendered at 2x the 1200x630 slot. At 1x the card arrived soft on LinkedIn:
+ * a 1200px source has no headroom once LinkedIn re-encodes it and a high-DPI
+ * screen scales it back up, so the browser was enlarging their compressed copy.
+ * 2400px survives that round trip. The declared width/height below must stay in
+ * step with the file or the platforms letterbox it.
+ *
+ * Each revision gets its own filename. Facebook and LinkedIn cache a preview
+ * image against its URL, so overwriting a path keeps serving the stale card to
+ * anyone who already shared the link.
  */
-const SHARE_IMAGE = "/assets/share-card-logo.jpg";
+const SHARE_IMAGE = "/assets/share-card-brand.jpg";
+const SHARE_IMAGE_W = 2400;
+const SHARE_IMAGE_H = 1260;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -37,7 +46,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "R.A. Clifton™",
-    images: [{ url: SHARE_IMAGE, width: 1200, height: 630, alt: SHARE_IMAGE_ALT }]
+    images: [{ url: SHARE_IMAGE, width: SHARE_IMAGE_W, height: SHARE_IMAGE_H, alt: SHARE_IMAGE_ALT }]
   },
   twitter: {
     card: "summary_large_image",
