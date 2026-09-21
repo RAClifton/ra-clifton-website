@@ -15,7 +15,17 @@ const SHARE_TITLE = "Discover Your AI Readiness Score™ — R.A. Clifton™";
 const SHARE_DESCRIPTION =
   "See where your business actually stands with AI, and what is worth doing first. Complimentary during pre-launch, and about five minutes.";
 const SHARE_IMAGE_ALT =
-  "R.A. Clifton™ — Discover Your AI Readiness Score, complimentary during pre-launch, shown beside the cover of the decision brief “AI for a Small Business: The Case for Starting Now”.";
+  "The R.A. Clifton brand mark: a gold-and-blue infinity symbol joining the words People and AI, above RAClifton.com and the line AI-First CPA & Business Advisory.";
+
+/**
+ * The logo is square and the card slot is 1.91:1, so the mark is centred on the
+ * brand navy rather than scaled to fill: a centre crop back to square (what
+ * iMessage and WhatsApp often show) still contains the whole mark.
+ * The filename is deliberately new. Facebook and LinkedIn cache a preview image
+ * against its URL for a long time, so reusing share-card.jpg would have kept
+ * serving the old card to anyone who had already shared the link.
+ */
+const SHARE_IMAGE = "/assets/share-card-logo.jpg";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -28,13 +38,13 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "R.A. Clifton™",
-    images: [{ url: "/assets/share-card.jpg", width: 1200, height: 630, alt: SHARE_IMAGE_ALT }]
+    images: [{ url: SHARE_IMAGE, width: 1200, height: 630, alt: SHARE_IMAGE_ALT }]
   },
   twitter: {
     card: "summary_large_image",
     title: SHARE_TITLE,
     description: SHARE_DESCRIPTION,
-    images: ["/assets/share-card.jpg"]
+    images: [SHARE_IMAGE]
   }
 };
 
