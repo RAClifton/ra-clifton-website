@@ -45,7 +45,9 @@ footer{padding:48px 0 36px;background:#051119;color:white} .foot{display:grid;ga
 @media(min-width:1280px){.container{padding-inline:40px}.hero h1{font-size:72px}.hero-photo{height:690px}.cards{grid-template-columns:repeat(4,1fr)}}
 
 .desktop-hero-reference{display:none;background:#07131b}
-.desktop-hero-reference img{display:block;width:100%;height:auto}
+/* The plate fills the section rather than setting its height, so if the copy
+   grows the photo crops a little instead of the text spilling past the hero. */
+.desktop-hero-reference img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 45%}
 @media(min-width:1024px){
   header{display:none}
   .desktop-hero-reference{display:block}
@@ -1226,21 +1228,39 @@ button,a,input{touch-action:manipulation}
    over it. The old artwork was 773px wide and carried its own baked headline,
    so a 2000px monitor was enlarging that text past 2.5x, which is what made it
    look soft. Nothing sharpness-critical lives in the image any more. */
-.desktop-hero-inner{position:relative}
+/* 56.28vw is the plate's own 1672:941 ratio, so the hero keeps that shape
+   unless the copy needs more room, in which case it grows and the photo covers. */
+.desktop-hero-inner{
+  position:relative;
+  min-height:56.28vw;
+  display:flex;align-items:center;
+  overflow:hidden;
+}
 
-/* The left third of the plate is a lit plant and window bokeh, which white text
-   would disappear into, so a gradient wash sits between photo and text: opaque
-   where the copy starts, gone by the time it reaches the advisor, so it reads
-   as depth of field rather than a panel laid on top. */
+/* The left of the plate is a lit plant and window bokeh, which white text would
+   disappear into, so a gradient wash sits between photo and text. It clears
+   entirely by 56%, well before the advisor's face at 42-52%, because holding it
+   at 0.80 through 40% was darkening him. */
 .desktop-hero-inner::before{
   content:"";
   position:absolute;inset:0;z-index:2;pointer-events:none;
   background:linear-gradient(100deg,
-    rgba(5,16,23,.95) 0%,
-    rgba(5,16,23,.92) 26%,
-    rgba(5,16,23,.80) 40%,
-    rgba(5,16,23,.30) 55%,
-    rgba(5,16,23,0)  70%);
+    rgba(5,16,23,.94) 0%,
+    rgba(5,16,23,.88) 24%,
+    rgba(5,16,23,.66) 34%,
+    rgba(5,16,23,.22) 44%,
+    rgba(5,16,23,0)  56%);
+}
+
+/* A soft warm lift centred on the advisor so he reads forward of the cityscape
+   rather than sinking into it. Sits above the wash, below the copy. */
+.desktop-hero-inner::after{
+  content:"";
+  position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:radial-gradient(58% 70% at 50% 42%,
+    rgba(255,236,200,.11) 0%,
+    rgba(255,236,200,.05) 46%,
+    rgba(255,236,200,0)   72%);
 }
 
 /* Every size below is a percentage of the hero's width, measured off the
@@ -1250,11 +1270,14 @@ button,a,input{touch-action:manipulation}
    Holding the column at 33.5vw is what makes "Make Smarter Decisions." break
    over two lines the way it always has. The pillars and trust row deliberately
    run wider than the column, as they did in the artwork. */
+/* Every element now shares the headline's column so nothing crosses onto the
+   advisor; that is what lets the gradient clear his face. Padding-top clears
+   the nav bar above it. */
 .desktop-hero-copy{
-  position:absolute;z-index:5;
-  top:0;bottom:0;left:3.6%;right:50%;
-  display:flex;flex-direction:column;justify-content:center;
-  padding:7% 0 5%;
+  position:relative;z-index:5;
+  width:34.5vw;margin-left:3.6vw;
+  display:flex;flex-direction:column;
+  padding:7.5vw 0 4vw;
   color:#fff;
 }
 .desktop-hero-eyebrow{
@@ -1264,7 +1287,7 @@ button,a,input{touch-action:manipulation}
   font-weight:800;letter-spacing:.14em;
 }
 .desktop-hero-title{
-  margin:0;max-width:34.5vw;
+  margin:0;
   font-family:Georgia,serif;font-weight:400;
   font-size:clamp(26px,3.9vw,82px);
   line-height:1.0;
@@ -1272,15 +1295,15 @@ button,a,input{touch-action:manipulation}
 }
 .desktop-hero-title span{display:block;color:var(--gold)}
 .desktop-hero-lede{
-  margin:clamp(10px,1.35vw,28px) 0 0;max-width:34.5vw;
+  margin:clamp(10px,1.35vw,28px) 0 0;
   font-size:clamp(11px,1.24vw,26px);
   line-height:1.61;
   color:rgba(255,255,255,.88);
 }
 .desktop-hero-pillars{
-  list-style:none;margin:clamp(14px,2.1vw,44px) 0 0;padding:0;max-width:42vw;
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:clamp(4px,.6vw,14px);
+  list-style:none;margin:clamp(12px,1.7vw,36px) 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:clamp(6px,.9vw,20px) clamp(8px,1.2vw,26px);
 }
 .desktop-hero-pillars li{
   display:flex;align-items:center;gap:clamp(4px,.55vw,12px);
@@ -1294,8 +1317,8 @@ button,a,input{touch-action:manipulation}
   width:clamp(14px,2.2vw,46px);height:clamp(14px,2.2vw,46px);
 }
 .desktop-hero-button{
-  align-self:start;width:34.5vw;min-height:5.1vw;
-  margin-top:clamp(12px,1.75vw,36px);
+  width:100%;min-height:5.1vw;
+  margin-top:clamp(12px,1.5vw,32px);
   display:inline-flex;align-items:center;justify-content:center;
   background:var(--gold);color:#1c170e;
   font-weight:850;text-decoration:none;
@@ -1305,12 +1328,12 @@ button,a,input{touch-action:manipulation}
 .desktop-hero-button:hover{filter:brightness(1.06)}
 .desktop-hero-button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .desktop-hero-trust{
-  list-style:none;margin:clamp(10px,1.5vw,32px) 0 0;padding:0;max-width:47vw;
-  display:flex;flex-wrap:nowrap;gap:clamp(8px,1.6vw,34px);
-  font-size:clamp(9px,1.2vw,25px);
+  list-style:none;margin:clamp(9px,1.25vw,28px) 0 0;padding:0;
+  display:flex;flex-wrap:wrap;gap:clamp(5px,.7vw,15px) clamp(10px,1.35vw,28px);
+  font-size:clamp(9px,1.15vw,24px);
   color:rgba(255,255,255,.80);
-  white-space:nowrap;
 }
+.desktop-hero-trust li{white-space:nowrap}
 
 /* The painted nav words these hotspots sat over are gone with the old artwork;
    the nav lives in the hamburger menu now. */
@@ -1464,7 +1487,7 @@ button,a,input{touch-action:manipulation}
   position:absolute;
   z-index:6;
   top:0;left:0;right:0;
-  height:13%;
+  height:5.6vw;
   background:linear-gradient(180deg,
     rgba(5,16,23,.96) 0%,
     rgba(5,16,23,.80) 52%,
