@@ -1553,6 +1553,70 @@ button,a,input{touch-action:manipulation}
 }
 .rac-nav-close:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
 
+/* === PHONE HERO ============================================================
+   Same plate, same words, same styling as desktop; only the arrangement
+   changes. A phone is taller than it is wide, the opposite of a desktop
+   screen, so copy laid over the photo would have to darken the advisor until
+   he reads as a silhouette. He sits on top, the words sit beneath him on
+   navy, and every one of them stays real text.
+
+   This replaces the painted phone artwork, whose text was baked into an
+   851px-wide picture and went soft the moment it was stretched. */
+@media(max-width:767px){
+  .approved-mobile-hero{display:none !important}
+  .desktop-hero-reference{display:block}
+
+  .desktop-hero-inner{display:block;min-height:0;overflow:visible}
+
+  /* Back into normal flow, so the copy can follow it down the page. */
+  .desktop-hero-reference img{
+    position:relative;inset:auto;
+    width:100%;height:84vw;
+    object-fit:cover;object-position:47% 30%;
+  }
+
+  /* Wash runs top-to-bottom over the photo only: enough at the top for the
+     brand bar to read, enough at the bottom to meet the navy copy panel. */
+  .desktop-hero-inner::before{
+    inset:0 0 auto;height:84vw;
+    background:linear-gradient(180deg,
+      rgba(5,16,23,.72) 0%,
+      rgba(5,16,23,.20) 26%,
+      rgba(5,16,23,0)   52%,
+      rgba(5,16,23,.55) 84%,
+      rgba(8,21,29,1)   100%);
+  }
+  .desktop-hero-inner::after{display:none}
+
+  .hero-navbar{height:62px;padding:0 18px}
+  .hero-navbar .brand strong{font-size:17px}
+  .hero-navbar .brand small{font-size:6px}
+  .hero-navbar .bars{height:22px}
+  .hero-navbar .bars i{width:2px}
+  .hero-navbar .rac-nav-toggle{font-size:24px;width:44px;height:44px}
+
+  .desktop-hero-copy{
+    position:static;width:auto;margin:0;
+    padding:22px 20px 34px;
+    background:#08151d;
+  }
+  .desktop-hero-eyebrow{font-size:clamp(10px,2.9vw,14px);margin-bottom:10px}
+  .desktop-hero-title{font-size:clamp(27px,8.4vw,42px);line-height:1.04}
+  .desktop-hero-lede{font-size:clamp(13px,3.7vw,17px);margin-top:14px}
+  .desktop-hero-pillars{margin-top:22px;gap:14px 16px}
+  .desktop-hero-pillars li{font-size:clamp(11px,3.1vw,14px);gap:10px}
+  .desktop-hero-glyph{width:clamp(26px,7vw,34px);height:clamp(26px,7vw,34px)}
+  .desktop-hero-button{
+    width:100%;min-height:54px;margin-top:22px;
+    font-size:clamp(13px,3.7vw,16px);
+  }
+  .desktop-hero-trust{
+    margin-top:16px;
+    font-size:clamp(11px,3vw,13px);
+    gap:6px 16px;
+  }
+}
+
 /* === MICRO-INTERACTIONS ====================================================
    All client-side: CSS and a little JS running in the visitor's browser, so
    the host is irrelevant. Every one of them is switched off under
