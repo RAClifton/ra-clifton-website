@@ -82,7 +82,7 @@ export default async function InsightsCarousel() {
                     <img
                       src={insight.image_url}
                       alt=""
-                      style={{ width: "100%", height: "100%", objectFit: "contain", padding: "1rem" }}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
                     />
                   ) : (
                     "∞"

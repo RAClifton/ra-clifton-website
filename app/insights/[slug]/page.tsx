@@ -64,18 +64,8 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
 
       <article>
         {insight.image_url && (
-          <div
-            style={{
-              background: "#08151d",
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "2rem",
-              marginTop: "1rem",
-            }}
-          >
-            <img src={insight.image_url} alt="" style={{ width: "100%", maxWidth: "300px", height: "auto" }} />
+          <div style={{ background: "#08151d", borderRadius: "8px", overflow: "hidden", marginTop: "1rem" }}>
+            <img src={insight.image_url} alt="" style={{ display: "block", width: "100%", height: "auto" }} />
           </div>
         )}
         <h1 style={{ marginTop: "1rem", marginBottom: "0.5rem" }}>{insight.title}</h1>
