@@ -1277,7 +1277,7 @@ button,a,input{touch-action:manipulation}
   position:relative;z-index:5;
   width:34.5vw;margin-left:3.6vw;
   display:flex;flex-direction:column;
-  padding:7.5vw 0 4vw;
+  padding:8.8vw 0 4vw;
   color:#fff;
 }
 .desktop-hero-eyebrow{
@@ -1487,7 +1487,7 @@ button,a,input{touch-action:manipulation}
   position:absolute;
   z-index:6;
   top:0;left:0;right:0;
-  height:5.6vw;
+  height:6.6vw;
   background:linear-gradient(180deg,
     rgba(5,16,23,.96) 0%,
     rgba(5,16,23,.80) 52%,
@@ -1495,7 +1495,10 @@ button,a,input{touch-action:manipulation}
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 3.4% 3%;
+  /* All in vw. Percentage padding resolves against the container's WIDTH, so
+     the previous "0 3.4% 3%" put a 3vw pad under a 5.6vw-tall bar and none
+     above it, which pinned the brand to the top edge. */
+  padding:0 3.4vw;
   color:#fff;
 }
 .hero-navbar .brand strong{font-size:clamp(15px,1.45vw,26px)}
