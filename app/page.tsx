@@ -65,7 +65,9 @@ export default function HomePage() {
     <>
       <TopNav />
       <div dangerouslySetInnerHTML={{ __html: approvedV12Markup }} />
-      <InsightsCarousel />
+      <section id="latest-insights" style={{ padding: "4rem 1rem", backgroundColor: "#fafafa" }}>
+        <InsightsCarousel />
+      </section>
       <V12ClientController />
       <ResearchReportLeadMagnet />
     </>

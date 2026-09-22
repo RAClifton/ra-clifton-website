@@ -24,9 +24,12 @@ export default function TopNav() {
           color: #8a6410;
         }
       `}</style>
-      <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", justifyContent: "flex-end", gap: "1.5rem" }}>
-        <Link href="/insights/archive" className="top-nav-link">
+      <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", justifyContent: "flex-end", gap: "2rem" }}>
+        <Link href="/#latest-insights" className="top-nav-link">
           Insights
+        </Link>
+        <Link href="/insights/archive" className="top-nav-link">
+          All Insights
         </Link>
       </div>
     </nav>
