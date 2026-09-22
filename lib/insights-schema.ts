@@ -5,6 +5,7 @@ export const insightCreateSchema = z.object({
   title: z.string().trim().min(5).max(200),
   body: z.string().trim().min(50),
   author: z.string().trim().min(2).max(120),
+  image_url: z.string().trim().max(500).optional(),
 });
 
 export const insightUpdateSchema = insightCreateSchema.partial();

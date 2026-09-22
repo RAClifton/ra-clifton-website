@@ -8,8 +8,8 @@ export async function createInsight(data: InsightInput): Promise<{ id: string; s
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const results = (await sql`
-    INSERT INTO insights (slug, title, body, author, status, created_at, updated_at)
-    VALUES (${data.slug}, ${data.title}, ${data.body}, ${data.author}, 'draft', now(), now())
+    INSERT INTO insights (slug, title, body, author, image_url, status, created_at, updated_at)
+    VALUES (${data.slug}, ${data.title}, ${data.body}, ${data.author}, ${data.image_url ?? null}, 'draft', now(), now())
     RETURNING id, slug
   `) as any;
 
@@ -48,6 +48,10 @@ export async function updateInsight(id: string, data: InsightUpdate): Promise<In
   if (data.slug !== undefined) {
     updates.push("slug");
     values.push(data.slug);
+  }
+  if (data.image_url !== undefined) {
+    updates.push("image_url");
+    values.push(data.image_url);
   }
 
   if (updates.length === 0) return null;

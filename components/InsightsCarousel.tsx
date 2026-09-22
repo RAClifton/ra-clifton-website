@@ -11,11 +11,12 @@ export default async function InsightsCarousel() {
 
   if (insights.length === 0) return null;
 
+  // Site palette: navy and ink bases lifting into gold, teal and cyan.
   const imageColors = [
-    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-    "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-    "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    "linear-gradient(135deg, #071116 0%, #0f2b3a 55%, #efbd55 100%)",
+    "linear-gradient(135deg, #08151d 0%, #0d3b3a 55%, #19bda4 100%)",
+    "linear-gradient(135deg, #071116 0%, #0e3242 55%, #20c7df 100%)",
+    "linear-gradient(135deg, #101820 0%, #2a2618 55%, #c9962f 100%)",
   ];
 
   return (
@@ -61,22 +62,31 @@ export default async function InsightsCarousel() {
                   transition: "box-shadow 0.3s ease, transform 0.3s ease",
                 }}
               >
-                {/* Image Placeholder */}
+                {/* Cover image, or a palette gradient carrying the brand's
+                    infinity mark when the post has no image of its own. */}
                 <div
                   style={{
                     width: "100%",
                     height: "200px",
-                    background: imageColors[idx % imageColors.length],
+                    background: insight.image_url ? "#08151d" : imageColors[idx % imageColors.length],
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "#fff",
-                    fontSize: "3rem",
-                    fontWeight: "300",
+                    color: "rgba(239,189,85,.32)",
+                    fontSize: "3.4rem",
+                    lineHeight: 1,
                   }}
-                  aria-hidden="true"
+                  aria-hidden={insight.image_url ? undefined : "true"}
                 >
-                  📰
+                  {insight.image_url ? (
+                    <img
+                      src={insight.image_url}
+                      alt=""
+                      style={{ width: "100%", height: "100%", objectFit: "contain", padding: "1rem" }}
+                    />
+                  ) : (
+                    "∞"
+                  )}
                 </div>
 
                 {/* Card Content */}

@@ -63,6 +63,21 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
       </Link>
 
       <article>
+        {insight.image_url && (
+          <div
+            style={{
+              background: "#08151d",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "2rem",
+              marginTop: "1rem",
+            }}
+          >
+            <img src={insight.image_url} alt="" style={{ width: "100%", maxWidth: "300px", height: "auto" }} />
+          </div>
+        )}
         <h1 style={{ marginTop: "1rem", marginBottom: "0.5rem" }}>{insight.title}</h1>
         <p style={{ color: "#666", fontSize: "0.875rem", marginBottom: "2rem" }}>
           By {insight.author} • Published {new Date(insight.published_at || insight.created_at).toLocaleDateString()}

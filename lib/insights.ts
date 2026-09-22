@@ -6,6 +6,7 @@ export interface Insight {
   title: string;
   body: string;
   author: string;
+  image_url: string | null;
   status: string;
   published_at: string | null;
   created_at: string;
