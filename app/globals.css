@@ -1373,3 +1373,78 @@ button,a,input{touch-action:manipulation}
 .footcta:hover{filter:brightness(1.06)}
 .footcta:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.footcta{transition:none}}
+
+/* === SITE NAVIGATION =======================================================
+   The desktop hero artwork painted its own nav words, a search icon and a
+   second copy of the AI Readiness CTA across the top of the image. Those were
+   pixels, not markup, so unlinking them would have left dead graphics on
+   screen. This bar masks that strip instead and carries a real brand and a
+   working hamburger, matching the bar already painted into the mobile hero.
+
+   Height is a percentage of .desktop-hero-inner, which the artwork itself
+   sizes, so the mask tracks the image at every desktop width. A fixed pixel
+   height would drift off the painted strip on wide monitors. The painted strip
+   ends at 8.15% of the artwork; 10.2% clears it with margin. */
+.hero-navbar{
+  position:absolute;
+  z-index:6;
+  top:0;left:0;right:0;
+  height:10.2%;
+  background:#0a1a24;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 3.4%;
+  color:#fff;
+}
+.hero-navbar .brand strong{font-size:clamp(15px,1.45vw,26px)}
+.hero-navbar .brand small{font-size:clamp(5px,.48vw,9px)}
+.hero-navbar .bars{height:clamp(20px,1.95vw,34px)}
+.hero-navbar .bars i{width:clamp(2px,.23vw,4px)}
+.hero-navbar .rac-nav-toggle{
+  font-size:clamp(20px,1.9vw,34px);
+  width:clamp(40px,3.6vw,60px);
+  height:clamp(40px,3.6vw,60px);
+}
+
+.rac-nav-toggle{border:0;background:transparent;color:#fff;cursor:pointer;line-height:1;padding:0}
+.rac-nav-toggle:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* Phone: the artwork already paints a hamburger at top right and nothing sat
+   behind it. Measured off the 851x1697 source (strokes at x 752-796, y 62-96)
+   and padded out to a 44px target at the 393px reference width. */
+.mobile-hero-burger{
+  position:absolute;
+  z-index:4;
+  left:84.5%;right:2.5%;top:1.9%;height:5.5%;
+  border:0;background:transparent;padding:0;cursor:pointer;border-radius:8px;
+}
+
+.rac-nav-scrim{
+  position:fixed;inset:0;z-index:98;
+  background:rgba(4,12,18,.55);
+  border:0;padding:0;cursor:pointer;
+}
+.rac-nav-menu{
+  position:fixed;z-index:99;
+  top:0;right:0;height:100%;
+  width:min(320px,86vw);
+  background:#0a1a24;color:#fff;
+  padding:22px 20px;
+  display:flex;flex-direction:column;gap:2px;
+  box-shadow:-18px 0 48px rgba(0,0,0,.42);
+  overflow-y:auto;
+}
+.rac-nav-menu[hidden]{display:none}
+.rac-nav-menu a{
+  color:#fff;text-decoration:none;
+  font-size:16px;padding:14px 10px;border-radius:8px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.rac-nav-menu a:hover{background:rgba(239,189,85,.14);color:var(--gold)}
+.rac-nav-menu a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.rac-nav-close{
+  align-self:flex-end;border:0;background:transparent;color:#fff;
+  font-size:30px;line-height:1;cursor:pointer;padding:2px 6px;margin-bottom:10px;
+}
+.rac-nav-close:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
