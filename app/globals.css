@@ -1237,73 +1237,79 @@ button,a,input{touch-action:manipulation}
   position:absolute;inset:0;z-index:2;pointer-events:none;
   background:linear-gradient(100deg,
     rgba(5,16,23,.95) 0%,
-    rgba(5,16,23,.90) 20%,
-    rgba(5,16,23,.66) 38%,
-    rgba(5,16,23,.16) 55%,
-    rgba(5,16,23,0)  68%);
+    rgba(5,16,23,.92) 26%,
+    rgba(5,16,23,.80) 40%,
+    rgba(5,16,23,.30) 55%,
+    rgba(5,16,23,0)  70%);
 }
 
-/* The advisor's silhouette begins at 31% of the plate, so the copy column stops
-   before it and the gradient covers the overlap. */
+/* Every size below is a percentage of the hero's width, measured off the
+   approved artwork so the rebuilt text keeps its proportions: the copy column
+   ran 3.6% to 37% of width, the headline was 3.9% of width on a 1.0 line
+   height, and the button filled the column rather than hugging its label.
+   Holding the column at 33.5vw is what makes "Make Smarter Decisions." break
+   over two lines the way it always has. The pillars and trust row deliberately
+   run wider than the column, as they did in the artwork. */
 .desktop-hero-copy{
   position:absolute;z-index:5;
-  top:0;bottom:0;left:4.6%;right:60%;
+  top:0;bottom:0;left:3.6%;right:50%;
   display:flex;flex-direction:column;justify-content:center;
-  padding:9% 0 4%;
+  padding:7% 0 5%;
   color:#fff;
 }
 .desktop-hero-eyebrow{
-  margin:0 0 clamp(8px,.9vw,18px);
+  margin:0 0 clamp(6px,.85vw,18px);
   color:var(--gold);
-  font-size:clamp(10px,.95vw,19px);
-  font-weight:800;letter-spacing:.13em;
+  font-size:clamp(9px,1.2vw,25px);
+  font-weight:800;letter-spacing:.14em;
 }
 .desktop-hero-title{
-  margin:0;
+  margin:0;max-width:34.5vw;
   font-family:Georgia,serif;font-weight:400;
-  font-size:clamp(28px,3.25vw,68px);
-  line-height:1.07;
+  font-size:clamp(26px,3.9vw,82px);
+  line-height:1.0;
   letter-spacing:-.01em;
-  text-wrap:balance;
 }
 .desktop-hero-title span{display:block;color:var(--gold)}
 .desktop-hero-lede{
-  margin:clamp(14px,1.5vw,30px) 0 0;
-  font-size:clamp(12px,1.02vw,20px);
-  line-height:1.62;
+  margin:clamp(10px,1.35vw,28px) 0 0;max-width:34.5vw;
+  font-size:clamp(11px,1.24vw,26px);
+  line-height:1.61;
   color:rgba(255,255,255,.88);
-  max-width:34em;
 }
 .desktop-hero-pillars{
-  list-style:none;margin:clamp(16px,1.8vw,34px) 0 0;padding:0;
+  list-style:none;margin:clamp(14px,2.1vw,44px) 0 0;padding:0;max-width:42vw;
   display:grid;grid-template-columns:repeat(4,1fr);
-  gap:clamp(6px,.8vw,16px);
+  gap:clamp(4px,.6vw,14px);
 }
 .desktop-hero-pillars li{
-  display:flex;align-items:center;gap:clamp(5px,.5vw,10px);
-  font-size:clamp(9px,.72vw,14px);line-height:1.25;
-  color:rgba(255,255,255,.92);
+  display:flex;align-items:center;gap:clamp(4px,.55vw,12px);
+  font-size:clamp(8px,1.08vw,23px);line-height:1.25;
+  color:rgba(255,255,255,.94);
 }
-.desktop-hero-pillars .bars{height:clamp(14px,1.25vw,24px)}
-.desktop-hero-pillars .bars i{width:clamp(2px,.17vw,3px)}
-.desktop-hero-glyph{color:var(--gold);font-size:clamp(13px,1.15vw,22px);line-height:1}
+.desktop-hero-pillars .bars{height:clamp(14px,2.1vw,44px)}
+.desktop-hero-pillars .bars i{width:clamp(2px,.28vw,6px)}
+.desktop-hero-glyph{
+  flex:none;color:var(--gold);
+  width:clamp(14px,2.2vw,46px);height:clamp(14px,2.2vw,46px);
+}
 .desktop-hero-button{
-  align-self:start;
-  margin-top:clamp(16px,1.9vw,36px);
+  align-self:start;width:34.5vw;min-height:5.1vw;
+  margin-top:clamp(12px,1.75vw,36px);
   display:inline-flex;align-items:center;justify-content:center;
   background:var(--gold);color:#1c170e;
   font-weight:850;text-decoration:none;
-  font-size:clamp(11px,1.02vw,20px);
-  padding:clamp(10px,1.15vw,22px) clamp(18px,2vw,40px);
+  font-size:clamp(10px,1.35vw,28px);
   border-radius:7px;
 }
 .desktop-hero-button:hover{filter:brightness(1.06)}
 .desktop-hero-button:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .desktop-hero-trust{
-  list-style:none;margin:clamp(12px,1.4vw,26px) 0 0;padding:0;
-  display:flex;flex-wrap:wrap;gap:clamp(8px,1.3vw,26px);
-  font-size:clamp(9px,.76vw,15px);
-  color:rgba(255,255,255,.76);
+  list-style:none;margin:clamp(10px,1.5vw,32px) 0 0;padding:0;max-width:47vw;
+  display:flex;flex-wrap:nowrap;gap:clamp(8px,1.6vw,34px);
+  font-size:clamp(9px,1.2vw,25px);
+  color:rgba(255,255,255,.80);
+  white-space:nowrap;
 }
 
 /* The painted nav words these hotspots sat over are gone with the old artwork;
