@@ -1552,3 +1552,79 @@ button,a,input{touch-action:manipulation}
   font-size:30px;line-height:1;cursor:pointer;padding:2px 6px;margin-bottom:10px;
 }
 .rac-nav-close:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+
+/* === MICRO-INTERACTIONS ====================================================
+   All client-side: CSS and a little JS running in the visitor's browser, so
+   the host is irrelevant. Every one of them is switched off under
+   prefers-reduced-motion at the end of this block. */
+
+/* Pointer light. Hidden outright on touch, where there is no pointer. */
+.rac-cursor-glow{
+  position:fixed;top:0;left:0;z-index:97;
+  width:320px;height:320px;border-radius:50%;
+  pointer-events:none;opacity:0;
+  transition:opacity .35s ease;
+  background:radial-gradient(circle,
+    rgba(239,189,85,.13) 0%,
+    rgba(239,189,85,.05) 42%,
+    rgba(239,189,85,0)   70%);
+}
+@media(pointer:coarse){.rac-cursor-glow{display:none}}
+
+.rac-confetti{
+  position:fixed;inset:0;z-index:96;
+  width:100%;height:100%;
+  pointer-events:none;opacity:0;
+  transition:opacity .3s ease;
+}
+
+/* Lift on hover. Filter stays in the transition because .footcta already
+   animates brightness and this rule would otherwise drop it. */
+.btn,.footcta,.five-learn-btn,.brief-image9-button,
+.desktop-hero-button,.referral-primary,.sticky a{
+  position:relative;
+  transition:transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.btn:hover,.footcta:hover,.five-learn-btn:hover,.brief-image9-button:hover,
+.desktop-hero-button:hover,.referral-primary:hover,.sticky a:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 26px rgba(8,21,29,.28);
+}
+.btn:active,.footcta:active,.five-learn-btn:active,.brief-image9-button:active,
+.desktop-hero-button:active,.referral-primary:active,.sticky a:active{
+  transform:translateY(0);
+  box-shadow:0 4px 12px rgba(8,21,29,.22);
+}
+
+/* Light travelling across the gold fill, like a highlight moving over metal.
+   Gold CTAs only; it reads as a smear on the dark buttons. */
+.btn,.footcta,.five-learn-btn,.brief-image9-button,
+.desktop-hero-button,.referral-primary{overflow:hidden}
+.btn::after,.footcta::after,.five-learn-btn::after,.brief-image9-button::after,
+.desktop-hero-button::after,.referral-primary::after{
+  content:"";
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,
+    transparent 36%,
+    rgba(255,255,255,.55) 50%,
+    transparent 64%);
+  transform:translateX(-130%);
+}
+.btn:hover::after,.footcta:hover::after,.five-learn-btn:hover::after,
+.brief-image9-button:hover::after,.desktop-hero-button:hover::after,
+.referral-primary:hover::after{
+  transform:translateX(130%);
+  transition:transform .7s ease;
+}
+
+@media(prefers-reduced-motion:reduce){
+  .rac-cursor-glow,.rac-confetti{display:none}
+  .btn,.footcta,.five-learn-btn,.brief-image9-button,
+  .desktop-hero-button,.referral-primary,.sticky a{transition:none}
+  .btn:hover,.footcta:hover,.five-learn-btn:hover,.brief-image9-button:hover,
+  .desktop-hero-button:hover,.referral-primary:hover,.sticky a:hover{
+    transform:none;box-shadow:none;
+  }
+  .btn::after,.footcta::after,.five-learn-btn::after,.brief-image9-button::after,
+  .desktop-hero-button::after,.referral-primary::after{display:none}
+}

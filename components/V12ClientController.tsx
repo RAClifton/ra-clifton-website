@@ -305,6 +305,9 @@ export default function V12ClientController() {
           if (result.referralCode) safeSet("rac_referral_code", result.referralCode);
           status.dataset.state = "success";
           status.textContent = "Thank you. Your information has been received.";
+          // Fires only past the !response.ok throw above, so the celebration
+          // tracks a lead that actually saved, not one that looked like it did.
+          window.dispatchEvent(new CustomEvent("rac:lead-captured"));
           form.reset();
           if (counterValue) {
             counterValue.textContent = "0";

@@ -3,6 +3,7 @@ import V12ClientController from "@/components/V12ClientController";
 import ResearchReportLeadMagnet from "@/components/ResearchReportLeadMagnet";
 import InsightsCarousel from "@/components/InsightsCarousel";
 import SiteNav from "@/components/SiteNav";
+import LeadConfetti from "@/components/LeadConfetti";
 
 /**
  * Absolute base for link-preview URLs. A preview deployment points at itself so
@@ -77,6 +78,7 @@ export default function HomePage() {
       <InsightsCarousel />
       <div dangerouslySetInnerHTML={{ __html: markupFromFooter }} />
       <SiteNav />
+      <LeadConfetti />
       <V12ClientController />
       <ResearchReportLeadMagnet />
     </>
