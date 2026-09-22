@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import V12ClientController from "@/components/V12ClientController";
 import ResearchReportLeadMagnet from "@/components/ResearchReportLeadMagnet";
 import InsightsCarousel from "@/components/InsightsCarousel";
+import TopNav from "@/components/TopNav";
 
 /**
  * Absolute base for link-preview URLs. A preview deployment points at itself so
@@ -62,6 +63,7 @@ const approvedV12Markup = "<div id=\"v12-approved-root\" data-baseline=\"v12-app
 export default function HomePage() {
   return (
     <>
+      <TopNav />
       <div dangerouslySetInnerHTML={{ __html: approvedV12Markup }} />
       <InsightsCarousel />
       <V12ClientController />
