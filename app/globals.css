@@ -1221,29 +1221,93 @@ button,a,input{touch-action:manipulation}
    No change to the approved composition. These rules give existing painted
    controls real behaviour and make the chip selection state visible. */
 
-/* The desktop hero is a flat image with a header CTA and a hero CTA painted
-   into it and no links behind either, so clicking them does nothing today.
-   Hotspots are positioned as percentages of the 773x515 artwork. */
+/* The desktop hero is now a clean 1672x941 photographic plate with no text in
+   it, and the headline, lede, pillars, CTA and trust line are real text drawn
+   over it. The old artwork was 773px wide and carried its own baked headline,
+   so a 2000px monitor was enlarging that text past 2.5x, which is what made it
+   look soft. Nothing sharpness-critical lives in the image any more. */
 .desktop-hero-inner{position:relative}
-.desktop-hero-cta,.desktop-hero-headcta{position:absolute;z-index:3;border-radius:7px}
-.desktop-hero-cta{left:3.49%;right:62.87%;top:74.17%;height:6.99%}
-.desktop-hero-headcta{left:71.54%;right:1.94%;top:1.94%;height:6.21%}
-.desktop-hero-cta:focus-visible,.desktop-hero-headcta:focus-visible{outline:3px solid #fff;outline-offset:3px}
 
-/* The five nav words painted into the same artwork, given real destinations.
-   Each hotspot was measured off the image: the words occupy y 21-29 and sit at
-   x 261-297, 319-357, 379-401, 423-451 and 472-501, padded by 6px on each side
-   and opened to a 26px-tall target. Expressed as percentages of the 773x515
-   artwork so they track the image at every desktop width. The gaps between
-   neighbours stay 8px or wider, and Contact clears the painted search icon at
-   x 524 by 16px, so no hotspot catches a click meant for another. */
-.desktop-hero-nav a{position:absolute;z-index:3;top:2.33%;height:5.05%;border-radius:4px}
-.desktop-hero-nav a:nth-child(1){left:32.99%;right:60.67%} /* Solutions */
-.desktop-hero-nav a:nth-child(2){left:40.49%;right:52.91%} /* Resources */
-.desktop-hero-nav a:nth-child(3){left:48.25%;right:47.22%} /* About     */
-.desktop-hero-nav a:nth-child(4){left:53.94%;right:40.75%} /* Insights  */
-.desktop-hero-nav a:nth-child(5){left:60.28%;right:34.28%} /* Contact   */
-.desktop-hero-nav a:focus-visible{outline:3px solid #fff;outline-offset:3px}
+/* The left third of the plate is a lit plant and window bokeh, which white text
+   would disappear into, so a gradient wash sits between photo and text: opaque
+   where the copy starts, gone by the time it reaches the advisor, so it reads
+   as depth of field rather than a panel laid on top. */
+.desktop-hero-inner::before{
+  content:"";
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(100deg,
+    rgba(5,16,23,.95) 0%,
+    rgba(5,16,23,.90) 20%,
+    rgba(5,16,23,.66) 38%,
+    rgba(5,16,23,.16) 55%,
+    rgba(5,16,23,0)  68%);
+}
+
+/* The advisor's silhouette begins at 31% of the plate, so the copy column stops
+   before it and the gradient covers the overlap. */
+.desktop-hero-copy{
+  position:absolute;z-index:5;
+  top:0;bottom:0;left:4.6%;right:60%;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:9% 0 4%;
+  color:#fff;
+}
+.desktop-hero-eyebrow{
+  margin:0 0 clamp(8px,.9vw,18px);
+  color:var(--gold);
+  font-size:clamp(10px,.95vw,19px);
+  font-weight:800;letter-spacing:.13em;
+}
+.desktop-hero-title{
+  margin:0;
+  font-family:Georgia,serif;font-weight:400;
+  font-size:clamp(28px,3.25vw,68px);
+  line-height:1.07;
+  letter-spacing:-.01em;
+  text-wrap:balance;
+}
+.desktop-hero-title span{display:block;color:var(--gold)}
+.desktop-hero-lede{
+  margin:clamp(14px,1.5vw,30px) 0 0;
+  font-size:clamp(12px,1.02vw,20px);
+  line-height:1.62;
+  color:rgba(255,255,255,.88);
+  max-width:34em;
+}
+.desktop-hero-pillars{
+  list-style:none;margin:clamp(16px,1.8vw,34px) 0 0;padding:0;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:clamp(6px,.8vw,16px);
+}
+.desktop-hero-pillars li{
+  display:flex;align-items:center;gap:clamp(5px,.5vw,10px);
+  font-size:clamp(9px,.72vw,14px);line-height:1.25;
+  color:rgba(255,255,255,.92);
+}
+.desktop-hero-pillars .bars{height:clamp(14px,1.25vw,24px)}
+.desktop-hero-pillars .bars i{width:clamp(2px,.17vw,3px)}
+.desktop-hero-glyph{color:var(--gold);font-size:clamp(13px,1.15vw,22px);line-height:1}
+.desktop-hero-button{
+  align-self:start;
+  margin-top:clamp(16px,1.9vw,36px);
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--gold);color:#1c170e;
+  font-weight:850;text-decoration:none;
+  font-size:clamp(11px,1.02vw,20px);
+  padding:clamp(10px,1.15vw,22px) clamp(18px,2vw,40px);
+  border-radius:7px;
+}
+.desktop-hero-button:hover{filter:brightness(1.06)}
+.desktop-hero-button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.desktop-hero-trust{
+  list-style:none;margin:clamp(12px,1.4vw,26px) 0 0;padding:0;
+  display:flex;flex-wrap:wrap;gap:clamp(8px,1.3vw,26px);
+  font-size:clamp(9px,.76vw,15px);
+  color:rgba(255,255,255,.76);
+}
+
+/* The painted nav words these hotspots sat over are gone with the old artwork;
+   the nav lives in the hamburger menu now. */
 
 /* Chips: .chips button.sel already carries the approved gold selected state,
    it simply had no code switching it on. These add the pointer, the hover
@@ -1394,12 +1458,15 @@ button,a,input{touch-action:manipulation}
   position:absolute;
   z-index:6;
   top:0;left:0;right:0;
-  height:10.2%;
-  background:#0a1a24;
+  height:13%;
+  background:linear-gradient(180deg,
+    rgba(5,16,23,.96) 0%,
+    rgba(5,16,23,.80) 52%,
+    rgba(5,16,23,0) 100%);
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 3.4%;
+  padding:0 3.4% 3%;
   color:#fff;
 }
 .hero-navbar .brand strong{font-size:clamp(15px,1.45vw,26px)}
