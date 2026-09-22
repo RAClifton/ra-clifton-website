@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import V12ClientController from "@/components/V12ClientController";
 import ResearchReportLeadMagnet from "@/components/ResearchReportLeadMagnet";
+import InsightsCarousel from "@/components/InsightsCarousel";
 
 /**
  * Absolute base for link-preview URLs. A preview deployment points at itself so
@@ -62,6 +63,7 @@ export default function HomePage() {
   return (
     <>
       <div dangerouslySetInnerHTML={{ __html: approvedV12Markup }} />
+      <InsightsCarousel />
       <V12ClientController />
       <ResearchReportLeadMagnet />
     </>

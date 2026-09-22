@@ -26,43 +26,76 @@ export default async function ArchivePage() {
     // Database not configured yet
   }
 
+  const imageColors = [
+    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+    "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
+    "linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%)",
+  ];
+
   return (
     <main className="insights-archive">
-      <div style={{ padding: "2rem 1rem", maxWidth: "900px", margin: "0 auto" }}>
-        <Link href="/insights" style={{ color: "#8a6410", textDecoration: "none", marginBottom: "1rem", display: "inline-block" }}>
-          ← Back to Recent Insights
+      <div style={{ padding: "2rem 1rem", maxWidth: "1000px", margin: "0 auto" }}>
+        <Link href="/" style={{ color: "#8a6410", textDecoration: "none", marginBottom: "1rem", display: "inline-block" }}>
+          ← Back to Home
         </Link>
 
         <h1 style={{ marginTop: "1rem" }}>All Insights</h1>
         <p style={{ marginBottom: "2rem", color: "#666" }}>
-          Complete archive of published insights and articles.
+          Complete archive of published insights and articles from R.A. Clifton.
         </p>
 
         {insights.length === 0 ? (
           <p style={{ padding: "2rem", textAlign: "center", color: "#999" }}>No insights yet. Check back soon.</p>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            {insights.map((insight) => (
+          <div style={{ display: "grid", gap: "2rem" }}>
+            {insights.map((insight, idx) => (
               <article
                 key={insight.id}
                 style={{
+                  display: "grid",
+                  gridTemplateColumns: "200px 1fr",
+                  gap: "1.5rem",
                   padding: "1.5rem",
                   border: "1px solid #e0e0e0",
                   borderRadius: "8px",
-                  backgroundColor: "#fafafa",
+                  backgroundColor: "#fff",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem" }}>
-                  <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    height: "160px",
+                    background: imageColors[idx % imageColors.length],
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontSize: "2.5rem",
+                    fontWeight: "300",
+                  }}
+                  aria-hidden="true"
+                >
+                  📰
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div>
                     <Link href={`/insights/${insight.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
-                      <h2 style={{ marginTop: 0, marginBottom: "0.5rem", color: "#101820" }}>{insight.title}</h2>
+                      <h2 style={{ marginTop: 0, marginBottom: "0.5rem", color: "#101820", fontSize: "1.25rem" }}>
+                        {insight.title}
+                      </h2>
                     </Link>
-                    <p style={{ margin: 0, color: "#666", fontSize: "0.875rem" }}>
+                    <p style={{ margin: "0 0 1rem 0", color: "#666", fontSize: "0.875rem" }}>
                       By {insight.author} • {new Date(insight.published_at || insight.created_at).toLocaleDateString()}
                     </p>
-                    <p style={{ marginTop: "1rem", marginBottom: "1rem", color: "#555" }}>
-                      {insight.body.slice(0, 180)}...
+                    <p style={{ margin: 0, color: "#555", lineHeight: "1.6" }}>
+                      {insight.body.slice(0, 200)}...
                     </p>
+                  </div>
+                  <div style={{ marginTop: "1rem" }}>
                     <Link href={`/insights/${insight.slug}`} style={{ color: "#8a6410", textDecoration: "none", fontWeight: "bold" }}>
                       Read More →
                     </Link>
