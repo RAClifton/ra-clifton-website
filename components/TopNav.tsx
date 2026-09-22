@@ -25,9 +25,12 @@ export default function TopNav() {
         }
       `}</style>
       <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", justifyContent: "flex-end", gap: "2rem" }}>
-        <Link href="/#latest-insights" className="top-nav-link">
+        {/* Plain anchor, not Link: this nav only renders on the homepage, so this
+            is a same-page fragment. Next's router would client-side navigate and
+            run its own scroll logic, which ignores the section's scroll-margin-top. */}
+        <a href="#latest-insights" className="top-nav-link">
           Insights
-        </Link>
+        </a>
         <Link href="/insights/archive" className="top-nav-link">
           All Insights
         </Link>
