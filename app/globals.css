@@ -17,7 +17,12 @@ h1,h2,h3{font-family:Georgia,serif} .hero h1{margin:0;font-size:42px;line-height
 .btn{display:flex;align-items:center;justify-content:center;min-height:56px;padding:0 18px;border-radius:7px;background:linear-gradient(90deg,var(--gold2),var(--gold));color:#17130b;font-weight:850;margin-top:28px}
 .trust{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:8px;font-size:12.5px;color:rgba(255,255,255,.82)} .trust li{min-height:28px;display:flex;align-items:center;gap:8px}
 .hero-visual{position:relative;max-width:350px;margin:auto;width:100%} .hero-photo{position:relative;height:445px;overflow:hidden;border-radius:13px;box-shadow:0 30px 80px rgba(0,0,0,.28)}
-.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:49% center;transform:scale(1.08)} .hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.25))}
+/* Focal point is the advisor's face, measured at 47% across / 35% down the
+   1672x941 plate, so cover-cropping keeps him framed at every box shape,
+   including iPad held portrait. The previous scale(1.08) existed to hide the
+   edges of a 380x470 source and only added enlargement on top of an already
+   ~1.9x upscale, so it is gone now that the source is 1672px wide. */
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:47% 35%} .hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.25))}
 .dash{position:absolute;right:10px;top:16px;width:216px;padding:11px;border:1px solid rgba(40,208,230,.24);border-radius:9px;background:rgba(4,19,27,.82);backdrop-filter:blur(10px);box-shadow:0 16px 40px rgba(0,0,0,.26);color:white}
 .dash small{font-size:8px;font-weight:800} .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px} .metric{padding:6px 5px;background:rgba(255,255,255,.04);border-radius:5px} .metric span{display:block;font-size:6px;opacity:.7;text-transform:uppercase} .metric strong{font-size:13px} .metric em{display:block;color:#2ad8bd;font-size:6.5px;font-style:normal}
 .spark{height:48px;margin-top:7px;border-radius:6px;background:linear-gradient(135deg,transparent 25%,rgba(32,199,223,.12));position:relative} .spark:after{content:"";position:absolute;left:8px;right:8px;top:26px;height:2px;background:linear-gradient(90deg,#20c7df 0 15%,transparent 15% 18%,#20c7df 18% 34%,transparent 34% 37%,#20c7df 37% 52%,transparent 52% 55%,#20c7df 55% 72%,transparent 72% 75%,#20c7df 75% 100%);transform:skewY(-7deg)}
