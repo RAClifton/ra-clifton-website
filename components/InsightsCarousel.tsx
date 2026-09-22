@@ -19,13 +19,18 @@ export default async function InsightsCarousel() {
   ];
 
   return (
-    <section className="insights-carousel" style={{ padding: "4rem 1rem", backgroundColor: "#fafafa" }}>
+    <section
+      id="latest-insights"
+      className="insights-carousel"
+      aria-labelledby="latest-insights-title"
+      style={{ padding: "4rem 1rem", backgroundColor: "#fafafa", scrollMarginTop: "72px" }}
+    >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ marginBottom: "2rem" }}>
           <p style={{ margin: "0 0 0.5rem 0", color: "#8a6410", fontSize: "0.875rem", fontWeight: "600", letterSpacing: "0.05em" }}>
             STAY INFORMED
           </p>
-          <h2 style={{ margin: "0 0 1rem 0", fontSize: "1.875rem", color: "#101820" }}>
+          <h2 id="latest-insights-title" style={{ margin: "0 0 1rem 0", fontSize: "1.875rem", color: "#101820" }}>
             Latest Insights
           </h2>
           <p style={{ margin: 0, color: "#666", fontSize: "1rem" }}>
