@@ -6,8 +6,8 @@ import { useEffect, useRef } from "react";
  *  instead of reading as one flat colour. */
 const DUST_COLORS = ["239,189,85", "245,208,138", "247,243,233", "255,255,255"];
 
-const MAX_MOTES = 70;      // hard ceiling, so a fast flick cannot flood the frame
-const SPAWN_EVERY = 7;     // px of travel between spawns — the density dial
+const MAX_MOTES = 110;     // hard ceiling, so a fast flick cannot flood the frame
+const SPAWN_EVERY = 4.5;   // px of travel between spawns — the density dial
 
 type Mote = {
   x: number;
@@ -66,7 +66,7 @@ export default function CursorGlow() {
         y: y + (Math.random() - 0.5) * 7,
         vx: (Math.random() - 0.5) * 0.5 - drift * (Math.random() * 0.4),
         vy: (Math.random() - 0.5) * 0.35 + 0.12,
-        r: 0.8 + Math.random() * 1.4,
+        r: 0.45 + Math.random() * 0.85,
         life: 0,
         maxLife: 46 + Math.random() * 26,
         color: DUST_COLORS[Math.floor(Math.random() * DUST_COLORS.length)],
