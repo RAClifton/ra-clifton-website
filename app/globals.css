@@ -1633,7 +1633,14 @@ button,a,input{touch-action:manipulation}
     rgba(239,189,85,.05) 42%,
     rgba(239,189,85,0)   70%);
 }
-@media(pointer:coarse){.rac-cursor-glow{display:none}}
+/* Dust rides on top of the glow. Same z-index, later in the DOM, so it paints
+   over it without needing to renumber the confetti and menu layers above. */
+.rac-cursor-dust{
+  position:fixed;inset:0;z-index:97;
+  width:100%;height:100%;
+  pointer-events:none;
+}
+@media(pointer:coarse){.rac-cursor-glow,.rac-cursor-dust{display:none}}
 
 .rac-confetti{
   position:fixed;inset:0;z-index:96;
@@ -1682,7 +1689,7 @@ button,a,input{touch-action:manipulation}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .rac-cursor-glow,.rac-confetti{display:none}
+  .rac-cursor-glow,.rac-cursor-dust,.rac-confetti{display:none}
   .btn,.footcta,.five-learn-btn,.brief-image9-button,
   .desktop-hero-button,.referral-primary,.sticky a{transition:none}
   .btn:hover,.footcta:hover,.five-learn-btn:hover,.brief-image9-button:hover,
