@@ -23,6 +23,7 @@ export type LeadConfirmation = {
   fullName: string;
   email: string;
   interests: string[];
+  wantsConversation: boolean;
   focusAreas: string[];
   alreadyHasReport: boolean;
 };
@@ -150,7 +151,7 @@ export function leadConfirmationHtml(lead: LeadConfirmation, site: string) {
   return `<!doctype html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Thank you from R.A. Clifton</title></head>
 <body style="margin:0;padding:0;background:#eeeae1;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;">I have your details, and I'll be in touch within two business days.</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${lead.wantsConversation ? "I have your details, and I'll email within one business day to arrange a time." : "I have your details, and I'll be in touch within two business days."}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#eeeae1;">
 <tr><td align="center" style="padding:28px 14px;">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%;background:#ffffff;border-radius:10px;overflow:hidden;">
@@ -179,7 +180,7 @@ export function leadConfirmationHtml(lead: LeadConfirmation, site: string) {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
       <tr><td style="background:#fdf7e8;border-left:3px solid #efbd55;padding:18px 20px;">
         <p style="margin:0 0 6px;font-size:10px;letter-spacing:1.4px;font-weight:bold;color:#9b6a18;">WHAT HAPPENS NEXT</p>
-        <p style="margin:0;font-size:15.5px;line-height:1.6;color:#101820;">I'll look at this personally and come back to you within two business days. No obligation, and nothing to prepare &#8212; it's a conversation, not a pitch.</p>
+        <p style="margin:0;font-size:15.5px;line-height:1.6;color:#101820;">${lead.wantsConversation ? "You asked to book a conversation. I'll email you within one business day with a few times to choose from. No obligation, and nothing to prepare &#8212; it's a conversation, not a pitch." : "I'll look at this personally and come back to you within two business days. No obligation, and nothing to prepare &#8212; it's a conversation, not a pitch."}</p>
       </td></tr>
     </table>
   </td></tr>
@@ -224,7 +225,12 @@ export function leadConfirmationText(lead: LeadConfirmation, site: string) {
   lines.push(
     "",
     "WHAT HAPPENS NEXT",
-    "I'll look at this personally and come back to you within two business days.",
+    ...(lead.wantsConversation
+      ? [
+          "You asked to book a conversation.",
+          "I'll email you within one business day with a few times to choose from.",
+        ]
+      : ["I'll look at this personally and come back to you within two business days."]),
     "No obligation, and nothing to prepare — it's a conversation, not a pitch."
   );
 

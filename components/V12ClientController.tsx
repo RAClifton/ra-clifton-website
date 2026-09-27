@@ -6,6 +6,7 @@ type LeadPayload = {
   fullName: string;
   email: string;
   interests: string[];
+  wantsConversation: boolean;
   focusAreas: string[];
   message?: string;
   ctaOrigin?: string;
@@ -263,9 +264,19 @@ export default function V12ClientController() {
           status.textContent = "Please enter your full name and email address.";
           return;
         }
-        const interests = Array.from(document.querySelectorAll<HTMLInputElement>("#assessment-interest input[type=checkbox]:checked"))
+        // :not([data-conversation]) keeps the conversation request out of this
+        // list. It travels as its own field, and without the exclusion it would
+        // be recorded twice — once as a boolean, once as a string.
+        const interests = Array.from(
+          document.querySelectorAll<HTMLInputElement>(
+            "#assessment-interest input[type=checkbox]:not([data-conversation]):checked"
+          )
+        )
           .map((input) => input.closest("label")?.textContent?.trim().replace(/\s+/g, " ") || input.value)
           .filter(Boolean);
+        const wantsConversation = Boolean(
+          document.querySelector<HTMLInputElement>("#assessment-interest input[data-conversation]")?.checked
+        );
         // Read straight off the page rather than out of storage: the pills now
         // sit inside this form, so what is selected on screen at the moment they
         // press the button is the honest answer. Deduplicated because the same
@@ -282,6 +293,7 @@ export default function V12ClientController() {
           fullName: nameInput.value.trim(),
           email: emailInput.value.trim(),
           interests,
+          wantsConversation,
           focusAreas,
           message: messageInput?.value.trim() ? messageInput.value.trim().slice(0, 1000) : undefined,
           ctaOrigin: safeGet("rac_cta_origin") || undefined,

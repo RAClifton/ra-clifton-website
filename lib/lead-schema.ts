@@ -4,6 +4,10 @@ export const leadSchema = z.object({
   fullName: z.string().trim().min(2).max(120),
   email: z.string().trim().email().max(254),
   interests: z.array(z.string().trim().min(1).max(160)).max(10).default([]),
+  // Its own field rather than another string in `interests`: this one carries a
+  // one-business-day commitment, so both emails have to branch on it, and a
+  // boolean cannot be broken by someone editing the checkbox's label text.
+  wantsConversation: z.boolean().default(false),
   focusAreas: z.array(z.string().trim().min(1).max(60)).max(10).default([]),
   message: z.string().trim().max(1000).optional(),
   ctaOrigin: z.string().trim().max(160).optional(),

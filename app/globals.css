@@ -353,6 +353,38 @@ footer{padding:48px 0 36px;background:#051119;color:white} .foot{display:grid;ga
 }
 .interest-live:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){.interest-live{transition:none}}
+
+/* The free-conversation option. Same gold panel treatment as .interest-live
+   above it, so the two read as a pair, but it is a checkbox rather than a link
+   because it is submitted with the form. Sits below Readiness on purpose. */
+.interest-book{
+  margin:0 0 14px;
+  padding:10px 12px;
+  border:1px solid rgba(239,189,85,.42);
+  border-radius:7px;
+  background:rgba(239,189,85,.10);
+  transition:background-color .18s ease,border-color .18s ease;
+}
+.interest-book:hover{
+  background:rgba(239,189,85,.16);
+  border-color:rgba(239,189,85,.65);
+}
+.interest-book label{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  margin:0;
+  cursor:pointer;
+}
+.interest-book-name{font-weight:800}
+.interest-book-help{
+  margin:6px 0 0 26px;
+  font-size:12.5px;
+  line-height:1.5;
+  opacity:.82;
+}
+.interest-book input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){.interest-book{transition:none}}
 .brief-image9-list em{
   font-style:normal;
   color:rgba(255,255,255,.68);

@@ -10,6 +10,7 @@ const base: LeadNotification = {
   fullName: "Dana Whitfield",
   email: "dana@example.com",
   interests: ["AI Readiness Score™ (Free - Notify Me)"],
+  wantsConversation: false,
   focusAreas: ["Efficiency"],
   message: null,
   ctaOrigin: null,
@@ -73,5 +74,19 @@ describe("lead notification email", () => {
     expect(text).toContain("AI Readiness Score™ (Free - Notify Me)");
     expect(text).toContain("Call mornings.");
     expect(text).toContain("Get My Score →");
+  });
+});
+
+describe("conversation request", () => {
+  const booking: LeadNotification = { ...base, wantsConversation: true };
+
+  it("surfaces the booking and its one-business-day commitment", () => {
+    const text = leadNotificationText(booking);
+    expect(text).toContain("ASKED TO BOOK A CONVERSATION");
+    expect(text).toContain("one business day");
+  });
+
+  it("says nothing about a booking when none was requested", () => {
+    expect(leadNotificationText(base)).not.toContain("ASKED TO BOOK A CONVERSATION");
   });
 });

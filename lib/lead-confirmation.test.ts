@@ -14,6 +14,7 @@ const base: LeadConfirmation = {
   fullName: "Dana Whitfield",
   email: "dana@example.com",
   interests: ["AI Readiness Score™ (Free - Notify Me)"],
+  wantsConversation: false,
   focusAreas: ["Efficiency", "Growth"],
   alreadyHasReport: false,
 };
@@ -100,4 +101,26 @@ it("escapes visitor-supplied values instead of rendering them as markup", () => 
   expect(html).not.toContain("<script>");
   expect(html).not.toContain("<b>ticked</b>");
   expect(html).toContain("&lt;script&gt;");
+});
+
+describe("conversation request", () => {
+  const booking: LeadConfirmation = { ...base, wantsConversation: true };
+
+  it("promises one business day, never two, when a conversation was requested", () => {
+    for (const body of [leadConfirmationHtml(booking, SITE), leadConfirmationText(booking, SITE)]) {
+      expect(body).toContain("one business day");
+      expect(body).not.toContain("two business days");
+    }
+  });
+
+  it("acknowledges the request specifically", () => {
+    expect(leadConfirmationText(booking, SITE)).toContain("You asked to book a conversation.");
+  });
+
+  it("leaves the two-business-day wording alone when no conversation was requested", () => {
+    for (const body of [leadConfirmationHtml(base, SITE), leadConfirmationText(base, SITE)]) {
+      expect(body).toContain("two business days");
+      expect(body).not.toContain("one business day");
+    }
+  });
 });

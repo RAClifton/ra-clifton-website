@@ -20,6 +20,7 @@ export type LeadNotification = {
   fullName: string;
   email: string;
   interests: string[];
+  wantsConversation: boolean;
   focusAreas: string[];
   message?: string | null;
   ctaOrigin?: string | null;
@@ -131,6 +132,17 @@ export function leadNotificationHtml(lead: LeadNotification) {
 
   <tr><td style="padding:24px 32px 0;"><div style="border-top:1px solid #e6e1d7;font-size:0;line-height:0;">&nbsp;</div></td></tr>
 
+  ${lead.wantsConversation ? `
+  <tr><td style="padding:24px 32px 4px;font-family:Arial,Helvetica,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="border:1px solid #efbd55;border-radius:7px;background:#fdf6e6;">
+      <tr><td style="padding:14px 16px;font-family:Arial,Helvetica,sans-serif;">
+        <p style="margin:0 0 3px;font-size:11px;letter-spacing:.12em;color:#8a6410;font-weight:bold;">ASKED TO BOOK A CONVERSATION</p>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:#101820;"><strong>Reply within one business day</strong> to arrange a time.</p>
+      </td></tr>
+    </table>
+  </td></tr>` : ""}
+
   <tr><td style="padding:24px 32px 26px;font-family:Arial,Helvetica,sans-serif;">
     ${sectionLabel("ASSESSMENTS THEY ASKED ABOUT")}
     ${listRows(lead.interests)}
@@ -163,6 +175,9 @@ export function leadNotificationText(lead: LeadNotification) {
     lead.fullName,
     lead.email,
     "Reply to this email to reach them directly.",
+    ...(lead.wantsConversation
+      ? ["", "ASKED TO BOOK A CONVERSATION", "  Reply within one business day to arrange a time."]
+      : []),
     "",
     "ASSESSMENTS THEY ASKED ABOUT",
     ...(lead.interests.length ? lead.interests.map((i) => `  - ${i}`) : ["  None selected"]),
