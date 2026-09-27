@@ -114,7 +114,20 @@ describe("conversation request", () => {
   });
 
   it("acknowledges the request specifically", () => {
-    expect(leadConfirmationText(booking, SITE)).toContain("You asked to book a conversation.");
+    expect(leadConfirmationText(booking, SITE)).toContain("You asked to book a Discovery Call.");
+  });
+
+  it("states the call length, in both formats", () => {
+    for (const body of [leadConfirmationHtml(booking, SITE), leadConfirmationText(booking, SITE)]) {
+      expect(body).toContain("15-minute call");
+    }
+  });
+
+  it("makes no call-length promise when none was requested", () => {
+    for (const body of [leadConfirmationHtml(base, SITE), leadConfirmationText(base, SITE)]) {
+      expect(body).not.toContain("15-minute");
+      expect(body).not.toContain("Discovery Call");
+    }
   });
 
   it("leaves the two-business-day wording alone when no conversation was requested", () => {

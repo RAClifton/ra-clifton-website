@@ -137,8 +137,8 @@ export function leadNotificationHtml(lead: LeadNotification) {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
            style="border:1px solid #efbd55;border-radius:7px;background:#fdf6e6;">
       <tr><td style="padding:14px 16px;font-family:Arial,Helvetica,sans-serif;">
-        <p style="margin:0 0 3px;font-size:11px;letter-spacing:.12em;color:#8a6410;font-weight:bold;">ASKED TO BOOK A CONVERSATION</p>
-        <p style="margin:0;font-size:15px;line-height:1.5;color:#101820;"><strong>Reply within one business day</strong> to arrange a time.</p>
+        <p style="margin:0 0 3px;font-size:11px;letter-spacing:.12em;color:#8a6410;font-weight:bold;">ASKED TO BOOK A DISCOVERY CALL</p>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:#101820;"><strong>15 minutes.</strong> Reply within one business day to arrange a time.</p>
       </td></tr>
     </table>
   </td></tr>` : ""}
@@ -176,7 +176,7 @@ export function leadNotificationText(lead: LeadNotification) {
     lead.email,
     "Reply to this email to reach them directly.",
     ...(lead.wantsConversation
-      ? ["", "ASKED TO BOOK A CONVERSATION", "  Reply within one business day to arrange a time."]
+      ? ["", "ASKED TO BOOK A DISCOVERY CALL", "  15 minutes. Reply within one business day to arrange a time."]
       : []),
     "",
     "ASSESSMENTS THEY ASKED ABOUT",

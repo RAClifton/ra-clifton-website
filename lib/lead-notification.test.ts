@@ -82,11 +82,12 @@ describe("conversation request", () => {
 
   it("surfaces the booking and its one-business-day commitment", () => {
     const text = leadNotificationText(booking);
-    expect(text).toContain("ASKED TO BOOK A CONVERSATION");
+    expect(text).toContain("ASKED TO BOOK A DISCOVERY CALL");
     expect(text).toContain("one business day");
+    expect(text).toContain("15 minutes");
   });
 
   it("says nothing about a booking when none was requested", () => {
-    expect(leadNotificationText(base)).not.toContain("ASKED TO BOOK A CONVERSATION");
+    expect(leadNotificationText(base)).not.toContain("ASKED TO BOOK A DISCOVERY CALL");
   });
 });
